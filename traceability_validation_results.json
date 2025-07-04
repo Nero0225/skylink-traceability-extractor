@@ -1,0 +1,234 @@
+{
+    "validation_results": {
+        "1. UNREGULATED SOURCE EXAMPLE.md": {
+            "is_valid": false,
+            "confidence_score": 0.6,
+            "regulated_source": "145",
+            "traceability_chain": [
+                "ATO Aviation Group LLC. -> Logistica Aeroespacial S.A. de C.V.",
+                "Logistica Aeroespacial S.A. de C.V. -> Aircraft Parts Logistic",
+                "Aircraft Parts Logistic -> Skylink, Inc."
+            ],
+            "missing_documentation": [
+                "FAA Form 8130-3 lacks buyer information",
+                "Packing slip lacks an authorized signature"
+            ],
+            "compliance_notes": [
+                "The chain lacks a clear link to a regulated source such as an OEM or FAA repair station.",
+                "The serial number '8093' in one certificate does not match 'B8093' in others, indicating a potential documentation error."
+            ],
+            "asa100_compliance": false,
+            "validation_issues": [
+                "No direct traceability to a regulated source (OEM/121/129/135/145)",
+                "Inconsistent serial numbers across documents",
+                "Missing buyer information in some certificates"
+            ]
+        },
+        "2. 121 FULL TRACE EXAMPLE.md": {
+            "is_valid": false,
+            "confidence_score": 0.6,
+            "regulated_source": "121",
+            "traceability_chain": [
+                "USAIRWAYS, INC -> AvCorp Int'l Inc.",
+                "Avcorp Int'l Inc. -> AVSOURCE, INC",
+                "Avsource International Inc. -> SKYLINK INC"
+            ],
+            "missing_documentation": [
+                "Packing slip for each transaction",
+                "Authorized signature on Avcorp Int'l Inc. to AVSOURCE, INC certificates"
+            ],
+            "compliance_notes": [
+                "Traceability to a 121 regulated source is present",
+                "Lack of manufacturer information on some certificates"
+            ],
+            "asa100_compliance": false,
+            "validation_issues": [
+                "Missing authorized signature on Avcorp Int'l Inc. to AVSOURCE, INC certificates",
+                "Duplicate certificates with identical information",
+                "Missing packing slip documentation"
+            ]
+        },
+        "3. OEM TRACE EXAMPLE.md": {
+            "is_valid": false,
+            "confidence_score": 0.7,
+            "regulated_source": "OEM",
+            "traceability_chain": [
+                "AHG ATELIERS DE LA HAUTE-GARONNE -> Boeing Distribution Services Inc.",
+                "Boeing Distribution Services Inc. -> SKYLINK"
+            ],
+            "missing_documentation": [
+                "Certification date for Material Certification",
+                "Certification date for Packing Slip with Certification"
+            ],
+            "compliance_notes": [
+                "OEM traceability is present but incomplete due to part number discrepancies",
+                "Certification dates are missing on some documents, affecting traceability"
+            ],
+            "asa100_compliance": false,
+            "validation_issues": [
+                "Inconsistent part numbers across certificates",
+                "Missing certification dates on some documents"
+            ]
+        },
+        "4. TRACE BACK TO MANUFACTURER.md": {
+            "is_valid": false,
+            "confidence_score": 0.6,
+            "regulated_source": "OEM",
+            "traceability_chain": [
+                "DSC Trading, LLC -> Skylink, Inc.",
+                "Applied Avionics, Inc. -> Bizjet International"
+            ],
+            "missing_documentation": [
+                "Packing slip for all transactions"
+            ],
+            "compliance_notes": [
+                "Part 18-200 has a Certificate of Conformance from the OEM, Applied Avionics, Inc.",
+                "No direct linkage between DSC Trading, LLC and the OEM for part 18-200"
+            ],
+            "asa100_compliance": false,
+            "validation_issues": [
+                "Missing packing slip documentation",
+                "Incomplete traceability to regulated source for all parts"
+            ]
+        },
+        "5. LOT PACKAGE EXAMPLE.md": {
+            "is_valid": false,
+            "confidence_score": 0.6,
+            "regulated_source": "121",
+            "traceability_chain": [
+                "ExpressJet Airlines, Inc. -> Aventure International Aviation Services, LLC.",
+                "Aventure Int'l Aviation Services -> SKYLINK, INC"
+            ],
+            "missing_documentation": [
+                "Manufacturer certification",
+                "Authorized signature on packing slip"
+            ],
+            "compliance_notes": [
+                "Bill of Sale from ExpressJet Airlines, Inc. suggests potential 121 trace, but not confirmed",
+                "Material Certification Form is present and signed"
+            ],
+            "asa100_compliance": false,
+            "validation_issues": [
+                "Missing manufacturer information",
+                "No direct traceability to a regulated source (OEM/121/129/135/145)",
+                "Missing authorized signature on packing slip"
+            ]
+        },
+        "6. EXAMPLE 1. BOEING MULTIPLE LINES FULL TRACE.md": {
+            "is_valid": false,
+            "confidence_score": 0.6,
+            "regulated_source": "OEM",
+            "traceability_chain": [
+                "MOELLER -> Boeing Distribution Services",
+                "ANILLO Industries, LLC. -> Boeing Distribution Services",
+                "Boeing Distribution, Inc. -> SKYLINK INC"
+            ],
+            "missing_documentation": [
+                "Packing slip for each transaction",
+                "Certification date and signature for MWC00060-5C certificate"
+            ],
+            "compliance_notes": [
+                "OEM traceability is present through MOELLER and ANILLO INDUSTRIES",
+                "Missing documentation affects confidence in traceability"
+            ],
+            "asa100_compliance": false,
+            "validation_issues": [
+                "Missing packing slips for each transaction",
+                "Incomplete linkage between certificates",
+                "Missing certification date and signature in one certificate"
+            ]
+        },
+        "7. EXAMPLE 2. PERFECT TRACE.md": {
+            "is_valid": false,
+            "confidence_score": 0.6,
+            "regulated_source": "121",
+            "traceability_chain": [
+                "AvAir -> Endeavor Air"
+            ],
+            "missing_documentation": [
+                "Packing Slip"
+            ],
+            "compliance_notes": [
+                "Both parts are listed as 'New Surplus' but lack manufacturer details.",
+                "Certification dates are in the future, which may indicate a data entry error."
+            ],
+            "asa100_compliance": false,
+            "validation_issues": [
+                "Missing manufacturer information",
+                "No packing slip provided",
+                "No clear linkage to a regulated source (OEM/121/129/135/145)"
+            ]
+        },
+        "8. PACKING SLIP WITH COC ON 1 DOC.md": {
+            "is_valid": false,
+            "confidence_score": 0.4,
+            "regulated_source": "UNKNOWN",
+            "traceability_chain": [
+                "A&E Parts, Inc. -> Skylink, Inc."
+            ],
+            "missing_documentation": [
+                "Manufacturer certification",
+                "Authorized signature"
+            ],
+            "compliance_notes": [
+                "No direct traceability to a regulated source (OEM/121/129/135/145)",
+                "Document source indicates a combined packing slip and C of C, which is acceptable but lacks manufacturer details"
+            ],
+            "asa100_compliance": false,
+            "validation_issues": [
+                "Missing manufacturer information",
+                "Missing authorized signature",
+                "Certification date is in the future"
+            ]
+        },
+        "9. PACKING SLIP AND COC AS SEPARATE.md": {
+            "is_valid": false,
+            "confidence_score": 0.6,
+            "regulated_source": "UNKNOWN",
+            "traceability_chain": [
+                "MJ Aerospace -> SKYLINK INC"
+            ],
+            "missing_documentation": [
+                "Manufacturer certification",
+                "Regulated source documentation"
+            ],
+            "compliance_notes": [
+                "Both packing slip and Certificate of Conformance are present",
+                "Authorized signature is provided"
+            ],
+            "asa100_compliance": false,
+            "validation_issues": [
+                "Missing manufacturer information",
+                "No regulated source identified (OEM/121/129/135/145)"
+            ]
+        }
+    },
+    "validation_report": {
+        "validation_summary": {
+            "total_documents": 9,
+            "valid_documents": 0,
+            "validation_rate": 0.0,
+            "asa100_compliant": 0,
+            "compliance_rate": 0.0
+        },
+        "regulated_source_distribution": {
+            "145": 1,
+            "121": 3,
+            "OEM": 3,
+            "UNKNOWN": 2
+        },
+        "common_issues": {
+            "Missing manufacturer information": 4,
+            "No direct traceability to a regulated source (OEM/121/129/135/145)": 2,
+            "Missing packing slip documentation": 2,
+            "Inconsistent serial numbers across documents": 1,
+            "Missing buyer information in some certificates": 1,
+            "Missing authorized signature on Avcorp Int'l Inc. to AVSOURCE, INC certificates": 1,
+            "Duplicate certificates with identical information": 1,
+            "Inconsistent part numbers across certificates": 1,
+            "Missing certification dates on some documents": 1,
+            "Incomplete traceability to regulated source for all parts": 1
+        },
+        "validation_timestamp": "2025-07-04T08:41:23.236963"
+    }
+}

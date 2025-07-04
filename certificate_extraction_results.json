@@ -3,6 +3,7 @@
     "1. UNREGULATED SOURCE EXAMPLE.md": [
       {
         "certificate_type": "Part or Material Certification Form (ATA Specification 106)",
+        "document_source": "1. UNREGULATED SOURCE EXAMPLE.md",
         "part_number": "2606672-4",
         "serial_number": "B8093",
         "description": "BRAKE",
@@ -11,15 +12,13 @@
         "manufacturer": null,
         "seller_name": "Aircraft Parts Logistic",
         "buyer_name": "Skylink, Inc.",
-        "invoice_number": "14142",
         "certification_date": "02/21/2025",
         "authorized_signature": "Giancarlo S Campodonico",
-        "traceability_source": "PO 11421 - 145-Logistica Aeroespacial S.A. de C.V",
-        "additional_notes": "The Part(s) is / are not from a military or government source and has / have not been subjected to severe stress or heat.",
-        "document_source": "1. UNREGULATED SOURCE EXAMPLE.md"
+        "traceability_source": "PO 11421 - 145-Logistica Aeroespacial S.A. de C.V"
       },
       {
         "certificate_type": "FAA Form 8130-3 (Authorized Release Certificate)",
+        "document_source": "1. UNREGULATED SOURCE EXAMPLE.md",
         "part_number": "2606672-4",
         "serial_number": "B8093",
         "description": "Brake",
@@ -28,32 +27,73 @@
         "manufacturer": null,
         "seller_name": "B & W Aviation Corp",
         "buyer_name": null,
-        "invoice_number": "12524",
         "certification_date": "20/Feb/2025",
         "authorized_signature": "Jeremy C Noria",
-        "traceability_source": null,
-        "additional_notes": "Piston housing was OVERHAULED IAW CMM 32-40-08, Revision 15, dated Sep 28, 2007. Heat sink was inspected for continuous life. Pin length 1.40 in. Life remaining 100%.",
-        "document_source": "1. UNREGULATED SOURCE EXAMPLE.md"
+        "traceability_source": null
+      },
+      {
+        "certificate_type": "Work Order Documentation",
+        "document_source": "1. UNREGULATED SOURCE EXAMPLE.md",
+        "part_number": "2606672-4",
+        "serial_number": "B8093",
+        "description": "Brake",
+        "condition_code": null,
+        "quantity": null,
+        "manufacturer": null,
+        "seller_name": "B & W Aviation Corp",
+        "buyer_name": null,
+        "certification_date": "02/20/2025",
+        "authorized_signature": "Jeremy C Noria",
+        "traceability_source": null
+      },
+      {
+        "certificate_type": "Teardown Report",
+        "document_source": "1. UNREGULATED SOURCE EXAMPLE.md",
+        "part_number": "2606672-4",
+        "serial_number": "B8093",
+        "description": "Brake",
+        "condition_code": null,
+        "quantity": null,
+        "manufacturer": null,
+        "seller_name": "B & W Aviation Corp",
+        "buyer_name": null,
+        "certification_date": "01/27/2025",
+        "authorized_signature": "Jeremy C Noria",
+        "traceability_source": null
       },
       {
         "certificate_type": "Part or Material Certification Form (ATA Specification 106)",
+        "document_source": "1. UNREGULATED SOURCE EXAMPLE.md",
         "part_number": "2606672-4",
-        "serial_number": "B8093",
+        "serial_number": "B8093, B8263, B8194",
         "description": "Brake ASSY removed from B737-200",
         "condition_code": null,
         "quantity": null,
         "manufacturer": "HONEYWELL",
         "seller_name": "ATO Aviation Group LLC.",
         "buyer_name": "Logistica Aeroespacial S.A. de C.V.",
-        "invoice_number": null,
         "certification_date": "28/07/2023",
         "authorized_signature": "Victor Mendoza",
-        "traceability_source": "ATO Aviation Group LLC.",
-        "additional_notes": "The above referenced part(s) was/were not obtained from any government or military source, and was/were not subject to severe stress, heat or immersed in salt water.",
-        "document_source": "1. UNREGULATED SOURCE EXAMPLE.md"
+        "traceability_source": "ATO Aviation Group LLC."
+      },
+      {
+        "certificate_type": "Packing Slip with Certification",
+        "document_source": "1. UNREGULATED SOURCE EXAMPLE.md",
+        "part_number": "2606672-4",
+        "serial_number": "B8093",
+        "description": "BRAKE",
+        "condition_code": "OH",
+        "quantity": "1",
+        "manufacturer": null,
+        "seller_name": "Aircraft Parts Logistic",
+        "buyer_name": "SKYLINK, INC.",
+        "certification_date": "02/21/2025",
+        "authorized_signature": null,
+        "traceability_source": null
       },
       {
         "certificate_type": "Part or Material Certification Form (ATA Specification 106)",
+        "document_source": "1. UNREGULATED SOURCE EXAMPLE.md",
         "part_number": "2606672-4",
         "serial_number": "8093",
         "description": "BRAKE",
@@ -62,32 +102,10 @@
         "manufacturer": null,
         "seller_name": "LOGISTICA AEROESPACIAL S.A. DE C.V.",
         "buyer_name": null,
-        "invoice_number": "25-0015",
         "certification_date": "01/27/2025",
         "authorized_signature": "Gerardo Conde Lopez",
-        "traceability_source": "ATO Aviation Group/ Aviacsa",
-        "additional_notes": "THIS IS TO CERTIFY THAT THE COMPONENTS LISTED ABOVE TO THE BEST OF KNOWLEDGE AND ABILITIES HAVE NOT SHOWN EVIDENCE BY DOCUMENTATION AND DISCLAIMER TO HAVE BEEN SUBJECTED TO SEVERE STRESS OR HEAT AS IN ACCIDENT OR INCIDENT.",
-        "document_source": "1. UNREGULATED SOURCE EXAMPLE.md"
+        "traceability_source": "ATO Aviation Group/ Aviacsa"
       }
     ]
-  },
-  "summary": {
-    "total_documents_processed": 1,
-    "total_certificates_extracted": 4,
-    "certificates_by_type": {
-      "Part or Material Certification Form (ATA Specification 106)": 3,
-      "FAA Form 8130-3 (Authorized Release Certificate)": 1
-    },
-    "certificates_by_manufacturer": {
-      "HONEYWELL": 1
-    },
-    "certificates_by_condition": {
-      "OH": 2,
-      "OVERHAULED": 1
-    },
-    "files_processed": [
-      "1. UNREGULATED SOURCE EXAMPLE.md"
-    ],
-    "extraction_timestamp": "2025-07-04T01:02:49.032003"
   }
 }

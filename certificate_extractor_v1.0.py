@@ -21,21 +21,21 @@ class CertificateInfo:
     description: Optional[str] = None
     condition_code: Optional[str] = None
     quantity: Optional[str] = None
-    # batch_lot: Optional[str] = None
+    batch_lot: Optional[str] = None
     manufacturer: Optional[str] = None
     seller_name: Optional[str] = None
     buyer_name: Optional[str] = None
-    # purchase_order: Optional[str] = None
-    # invoice_number: Optional[str] = None
+    purchase_order: Optional[str] = None
+    invoice_number: Optional[str] = None
     certification_date: Optional[str] = None
     authorized_signature: Optional[str] = None
-    # approval_number: Optional[str] = None
+    approval_number: Optional[str] = None
     traceability_source: Optional[str] = None
-    # last_operator: Optional[str] = None
-    # work_performed: Optional[str] = None
-    # airworthiness_authority: Optional[str] = None
-    # non_incident_statement: Optional[str] = None
-    # additional_notes: Optional[str] = None
+    last_operator: Optional[str] = None
+    work_performed: Optional[str] = None
+    airworthiness_authority: Optional[str] = None
+    non_incident_statement: Optional[str] = None
+    additional_notes: Optional[str] = None
 
 class CertificateExtractor:
     """Main class for extracting certificate information from aviation documents"""
@@ -93,17 +93,30 @@ EXTRACT THE FOLLOWING INFORMATION FOR EACH CERTIFICATE FOUND:
    - Description
    - Condition Code (NS, OH, NE, SV, etc.)
    - Quantity
+   - Batch/Lot Number
    - Manufacturer
 
 3. **Transaction Details:**
    - Seller Name
    - Buyer Name
+   - Purchase Order Number
+   - Invoice Number
    - Certification Date
 
 4. **Certification Details:**
    - Authorized Signature (person name)
-   - Traceability Source (if applicable)
-   
+   - Approval Number
+   - Airworthiness Authority (FAA, EASA, etc.)
+   - Work Performed (if applicable)
+
+5. **Traceability:**
+   - Traceability Source
+   - Last Operator/Airline
+   - Non-incident Statement
+
+6. **Additional Notes:**
+   - Any special remarks or conditions
+
 RETURN RESULTS AS JSON ARRAY:
 [
   {{
@@ -114,12 +127,21 @@ RETURN RESULTS AS JSON ARRAY:
     "description": "...",
     "condition_code": "...",
     "quantity": "...",
+    "batch_lot": "...",
     "manufacturer": "...",
     "seller_name": "...",
     "buyer_name": "...",
+    "purchase_order": "...",
+    "invoice_number": "...",
     "certification_date": "...",
     "authorized_signature": "...",
+    "approval_number": "...",
     "traceability_source": "...",
+    "last_operator": "...",
+    "work_performed": "...",
+    "airworthiness_authority": "...",
+    "non_incident_statement": "...",
+    "additional_notes": "..."
   }}
 ]
 
@@ -255,7 +277,7 @@ IMPORTANT:
         # Combine results and summary
         output_data = {
             "extraction_results": serializable_results,
-            # "summary": summary
+            "summary": summary
         }
         
         with open(output_file, 'w', encoding='utf-8') as f:

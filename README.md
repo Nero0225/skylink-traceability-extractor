@@ -1,274 +1,210 @@
-# Aviation Certificate Extractor
+# Aviation Traceability Validation System
 
-A Python application that uses OpenAI's GPT-4 API to extract certificate information from aviation documents. This tool is designed to parse various types of aviation certificates, including ATA 106 forms, FAA 8130-3 tags, Certificates of Conformance, and more.
+A comprehensive system for validating aviation parts traceability against ASA-100 requirements and regulated source standards.
 
-## Features
+## Overview
 
-- **Multi-format Support**: Extracts certificates from various aviation document types
-- **Structured Output**: Returns organized JSON data with all certificate details
-- **Batch Processing**: Process multiple documents at once
-- **Comprehensive Extraction**: Captures part numbers, traceability, certification details, and more
-- **Summary Reports**: Generates detailed summaries of extracted data
+This system implements traceability validation based on aviation industry best practices as outlined in video transcripts about aviation traceability essentials. It validates certificate chains against regulated sources and ASA-100 Appendix A requirements.
 
-## Supported Certificate Types
+## Key Features
 
-1. **Part or Material Certification Form (ATA Specification 106)**
-2. **FAA Form 8130-3 (Authorized Release Certificate)**
-3. **Certificate of Conformance/Conformity**
-4. **Material Certification**
-5. **Work Order Documentation**
-6. **Teardown Report**
-7. **Packing Slip with Certification**
-8. **Bill of Sale**
-9. **Consignment Documentation**
-10. **OEM Manufacturer Certification**
-11. **European Certificate of Conformity (EN10204)**
+### 🔍 Regulated Source Validation
+- **OEM Trace**: Original Equipment Manufacturer (Best possible trace)
+- **121 Trace**: Domestic US airlines (Delta, American Airlines, etc.)
+- **129 Trace**: Foreign airlines operating in USA
+- **135 Trace**: Charter and cargo operators (FedEx, UPS, DHL)
+- **145 Trace**: FAA regulated repair stations
+
+### 📋 Document Requirements
+- Packing slip/packing list validation
+- Material certification/Certificate of Conformance (C of C)
+- Traceability chain linkage verification
+- ASA-100 compliance checking
+
+### 🤖 AI-Powered Analysis
+- Uses OpenAI GPT-4 for detailed certificate analysis
+- Validates complete traceability chains
+- Identifies missing documentation
+- Provides confidence scoring
+
+## Files
+
+### Core System
+- `traceability_validator.py`: Main validation system
+- `certificate_extractor.py`: Certificate extraction from documents
+- `test_validator.py`: Test script without OpenAI requirement
+
+### Data Files
+- `my_results.json`: Extracted certificate data from markdown documents
+- `ASA-100.md`: ASA-100 Appendix A requirements reference
+- `markdowns/`: Example aviation traceability documents
 
 ## Installation
 
-1. Clone or download the repository
-2. Install required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+1. Create virtual environment:
+```bash
+python -m venv venv
+```
 
-## Setup
+2. Activate virtual environment:
+```bash
+# Windows
+.\venv\Scripts\activate
 
-### OpenAI API Key
+# Linux/Mac
+source venv/bin/activate
+```
 
-You need an OpenAI API key to use this tool. Get one from [OpenAI's platform](https://platform.openai.com/api-keys).
+3. Install dependencies:
+```bash
+pip install openai python-dotenv
+```
 
-Set your API key using one of these methods:
+4. Set OpenAI API key:
 
-**Method 1: Environment Variable**
+**Option 1: Environment Variable**
 ```bash
 export OPENAI_API_KEY="your-api-key-here"
 ```
 
-**Method 2: .env file**
+**Option 2: .env File (Recommended)**
 Create a `.env` file in the project root:
 ```
-OPENAI_API_KEY=your-api-key-here
-```
-
-**Method 3: Direct in code**
-```python
-from certificate_extractor import CertificateExtractor
-extractor = CertificateExtractor(api_key="your-api-key-here")
+OPENAI_API_KEY=your_openai_api_key_here
 ```
 
 ## Usage
 
-### Basic Usage
-
-```python
-from certificate_extractor import CertificateExtractor
-
-# Initialize extractor
-extractor = CertificateExtractor()
-
-# Process all files in markdowns directory
-results = extractor.process_directory("markdowns")
-
-# Save results to JSON file
-extractor.save_results(results)
-```
-
-### Command Line
-
-Run the main script to process all markdown files:
+### With OpenAI API
 ```bash
-python certificate_extractor.py
+python traceability_validator.py
 ```
 
-### Example Scripts
-
-Run the example script to see different usage patterns:
+### Test Mode (No API Required)
 ```bash
-python example_usage.py
+python test_validator.py
 ```
 
-## Data Structure
+## Validation Results
 
-Each extracted certificate contains the following information:
+Based on the test run of 9 aviation documents:
 
-```python
-@dataclass
-class CertificateInfo:
-    certificate_type: str           # Type of certificate
-    document_source: str            # Source document filename
-    part_number: str               # Part number
-    serial_number: str             # Serial number
-    description: str               # Part description
-    condition_code: str            # Condition (NS, OH, NE, SV, etc.)
-    quantity: str                  # Quantity
-    batch_lot: str                 # Batch/lot number
-    manufacturer: str              # Manufacturer name
-    seller_name: str               # Seller company
-    buyer_name: str                # Buyer company
-    purchase_order: str            # PO number
-    invoice_number: str            # Invoice number
-    certification_date: str        # Date of certification
-    authorized_signature: str      # Signatory name
-    approval_number: str           # Approval/certificate number
-    traceability_source: str       # Traceability information
-    last_operator: str             # Last operator/airline
-    work_performed: str            # Work performed (if applicable)
-    airworthiness_authority: str   # FAA, EASA, etc.
-    non_incident_statement: str    # Non-incident declaration
-    additional_notes: str          # Additional remarks
+### Summary Statistics
+- **Total Documents**: 9
+- **Valid Documents**: 3 (33.3%)
+- **ASA-100 Compliant**: 3 (33.3%)
+- **Average Confidence**: 50.0%
+
+### Regulated Source Distribution
+- **OEM Traced**: 4 documents (Boeing, Applied Avionics, etc.)
+- **121 Traced**: 3 documents (US Airways, Endeavor Air, ExpressJet)
+- **145 Traced**: 1 document (B & W Aviation, Logistica Aeroespacial)
+- **Unknown**: 1 document
+
+### Common Issues Found
+- Missing packing slip documentation
+- Incomplete traceability chains
+- Missing material certifications
+
+## Validation Logic
+
+### Document Analysis
+1. **Certificate Extraction**: Extracts all certificates from document
+2. **Source Identification**: Identifies regulated sources in chain
+3. **Chain Building**: Builds seller-to-buyer traceability flow
+4. **Compliance Check**: Validates against ASA-100 requirements
+5. **AI Analysis**: Deep analysis using OpenAI GPT-4
+
+### Validation Criteria
+- ✅ Complete chain to regulated source
+- ✅ Proper documentation (packing slip + material cert)
+- ✅ Linkage between all chain steps
+- ✅ ASA-100 compliance for part class
+- ✅ Regulatory compliance
+
+## Examples
+
+### Valid Trace Example
+```
+📄 Document: 1. UNREGULATED SOURCE EXAMPLE.md
+   ✅ Valid: True
+   📊 Confidence: 90.0%
+   🏢 Regulated Source: 145 (FAA Repair Station)
+   🔗 Chain: Aircraft Parts Logistic -> Skylink, Inc.
+   📝 Notes: 145 trace found - repair station traceability
+   📜 ASA-100 Compliant: True
 ```
 
-## Output Format
-
-The tool generates a JSON file with the following structure:
-
-```json
-{
-  "extraction_results": {
-    "document1.md": [
-      {
-        "certificate_type": "Part or Material Certification Form (ATA Specification 106)",
-        "document_source": "document1.md",
-        "part_number": "2606672-4",
-        "serial_number": "B8093",
-        "description": "BRAKE",
-        "condition_code": "OH",
-        "quantity": "1",
-        "manufacturer": "B & W Aviation Corp",
-        "seller_name": "Aircraft Parts Logistic",
-        "buyer_name": "SKYLINK, INC.",
-        "purchase_order": "156414",
-        "invoice_number": "14142",
-        "certification_date": "02/21/2025",
-        "authorized_signature": "Giancarlo S Campodonico",
-        "traceability_source": "PO 11421 - 145-Logistica Aeroespacial S.A. de C.V",
-        "last_operator": "B & W Aviation Corp",
-        "airworthiness_authority": "FAA",
-        "non_incident_statement": "The Part(s) is / are not from a military or government source and has / have not been subjected to severe stress or heat"
-      }
-    ]
-  },
-  "summary": {
-    "total_documents_processed": 9,
-    "total_certificates_extracted": 25,
-    "certificates_by_type": {
-      "Part or Material Certification Form (ATA Specification 106)": 12,
-      "FAA Form 8130-3 (Authorized Release Certificate)": 3,
-      "Certificate of Conformance/Conformity": 8,
-      "Material Certification": 2
-    },
-    "certificates_by_condition": {
-      "NS": 15,
-      "OH": 5,
-      "NE": 3,
-      "SV": 2
-    },
-    "extraction_timestamp": "2025-01-26T10:30:00"
-  }
-}
+### Invalid Trace Example
+```
+📄 Document: 2. 121 FULL TRACE EXAMPLE.md
+   ✅ Valid: False
+   📊 Confidence: 30.0%
+   🏢 Regulated Source: 121 (Domestic Airline)
+   🔗 Chain: Avsource International Inc. -> SKYLINK INC
+   ⚠️  Issues: Missing packing slip
+   📜 ASA-100 Compliant: False
 ```
 
-## Configuration
+## Key Insights from Video Transcripts
 
-### Model Selection
+### What is Traceability?
+- Documentation ensuring history and location of all aviation parts
+- Includes packing slips, material certs, ATAs, manufacturer CFCs
+- Critical for safety - all parts must be traceable to regulated sources
 
-The default model is `gpt-4o`. You can modify this in the `CertificateExtractor` class:
+### Why is Traceability Important?
+- **Safety**: Lives depend on aircraft parts
+- **Regulatory**: FAA compliance requirements
+- **Quality**: Ensures parts are safe for aircraft installation
+- **Chain of Custody**: Complete documentation from origin to installation
 
-```python
-response = self.client.chat.completions.create(
-    model="gpt-4o",  # Change to your preferred model
-    messages=[...],
-    temperature=0.1,
-    max_tokens=4000
-)
-```
+### Traceability Chain Requirements
+- **Linkage**: Must connect each source to next buyer
+- **Documentation**: Each link needs packing slip + material cert
+- **Source Validation**: Must trace to regulated source
+- **Completeness**: No missing links in chain
 
-### Processing Parameters
+## ASA-100 Compliance
 
-- **Temperature**: Set to 0.1 for consistent results
-- **Max Tokens**: 4000 tokens per request
-- **Model**: GPT-4o recommended for best accuracy
+The system cross-references ASA-100 Appendix A requirements:
 
-## Error Handling
+### Part Classes
+- **Consumable Materials**: Statement of identity required
+- **Raw Materials**: Physical/chemical properties reports
+- **Standard Parts**: Certificate of Conformity required
+- **New Parts (PAH)**: FAA Form 8130-3 or part marking
+- **Used Parts**: Approval for return to service
 
-The tool includes comprehensive error handling:
+### Documentation Requirements
+- **On Receipt**: Specific documents based on part class
+- **For Shipment**: Certified copies and statements
+- **Traceability**: Complete chain to regulated source
 
-- **API Errors**: Logs OpenAI API errors and continues processing
-- **File Errors**: Handles missing files gracefully
-- **JSON Parsing**: Robust JSON extraction from API responses
-- **Encoding Issues**: Handles various text encodings
+## Future Enhancements
 
-## Performance Considerations
-
-- **API Costs**: Each document processed uses OpenAI API tokens
-- **Rate Limits**: The tool respects OpenAI's rate limits
-- **Batch Size**: Process documents in batches to optimize API usage
-- **Caching**: Consider implementing caching for repeated extractions
-
-## Troubleshooting
-
-### Common Issues
-
-1. **API Key Not Found**
-   - Ensure your OpenAI API key is properly set
-   - Check environment variables or .env file
-
-2. **Rate Limit Errors**
-   - Reduce batch size or add delays between requests
-   - Check your OpenAI plan limits
-
-3. **JSON Parsing Errors**
-   - The tool includes robust JSON cleaning
-   - Check document format if issues persist
-
-4. **Missing Certificates**
-   - Ensure documents are in the correct format
-   - Check if certificate types are properly defined
-
-### Debug Mode
-
-Enable debug logging:
-```python
-import logging
-logging.basicConfig(level=logging.DEBUG)
-```
-
-## Dependencies
-
-- `openai>=1.0.0` - OpenAI API client
-- `python-dotenv>=0.19.0` - Environment variable management
-- `pathlib2>=2.3.0` - Path handling utilities
-- `typing-extensions>=4.0.0` - Type hints support
-
-## License
-
-This project is provided as-is for educational and commercial use. Please ensure compliance with OpenAI's usage policies when using their API.
+1. **Enhanced AI Analysis**: More sophisticated pattern recognition
+2. **Automated Scoring**: Detailed compliance scoring system
+3. **Batch Processing**: Process multiple document folders
+4. **Report Generation**: Detailed PDF reports
+5. **Integration**: API endpoints for external systems
 
 ## Contributing
 
-Contributions are welcome! Please ensure:
+1. Fork the repository
+2. Create feature branch
+3. Add tests for new functionality
+4. Ensure all tests pass
+5. Submit pull request
 
-1. Code follows Python best practices
-2. New certificate types are properly documented
-3. Tests are included for new features
-4. Documentation is updated accordingly
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Support
 
-For issues or questions:
-
-1. Check the troubleshooting section
-2. Review the example scripts
-3. Ensure your OpenAI API key is valid
-4. Verify document formats are supported
-
-## Changelog
-
-### Version 1.0.0
-- Initial release
-- Support for 11 certificate types
-- Batch processing capability
-- Comprehensive JSON output
-- Error handling and logging
-- Example scripts and documentation 
+For questions or issues:
+- Review the test examples in `test_validator.py`
+- Check the validation logic in `traceability_validator.py`
+- Examine the certificate extraction in `certificate_extractor.py`
+- Reference ASA-100 requirements in `ASA-100.md` 
