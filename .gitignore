@@ -1,0 +1,8 @@
+/venv
+/__pycache__
+
+# Environment variables
+.env
+
+# Markdown files
+ASA-100.md
