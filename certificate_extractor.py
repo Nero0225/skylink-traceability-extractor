@@ -6,6 +6,10 @@ from pathlib import Path
 from openai import OpenAI
 import logging
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv(".env")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -283,23 +287,25 @@ def main():
     
     # Save results
     output_data = extractor.save_results(results)
+
+    print("Certificate extraction complete")
     
     # Print summary
-    summary = output_data["summary"]
-    print("\n" + "="*60)
-    print("CERTIFICATE EXTRACTION SUMMARY")
-    print("="*60)
-    print(f"Documents Processed: {summary['total_documents_processed']}")
-    print(f"Total Certificates: {summary['total_certificates_extracted']}")
-    print("\nCertificates by Type:")
-    for cert_type, count in summary['certificates_by_type'].items():
-        print(f"  {cert_type}: {count}")
+    # summary = output_data["summary"]
+    # print("\n" + "="*60)
+    # print("CERTIFICATE EXTRACTION SUMMARY")
+    # print("="*60)
+    # print(f"Documents Processed: {summary['total_documents_processed']}")
+    # print(f"Total Certificates: {summary['total_certificates_extracted']}")
+    # print("\nCertificates by Type:")
+    # for cert_type, count in summary['certificates_by_type'].items():
+    #     print(f"  {cert_type}: {count}")
     
-    print("\nCertificates by Condition:")
-    for condition, count in summary['certificates_by_condition'].items():
-        print(f"  {condition}: {count}")
+    # print("\nCertificates by Condition:")
+    # for condition, count in summary['certificates_by_condition'].items():
+    #     print(f"  {condition}: {count}")
     
-    print(f"\nDetailed results saved to: certificate_extraction_results.json")
+    # print(f"\nDetailed results saved to: certificate_extraction_results.json")
 
 if __name__ == "__main__":
     main() 

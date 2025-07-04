@@ -466,7 +466,7 @@ def main():
     validator = TraceabilityValidator()
     
     # Load extraction results
-    results_file = "my_results.json"
+    results_file = "certificate_extraction_results.json"
     
     if not os.path.exists(results_file):
         logger.error(f"Results file {results_file} not found!")
