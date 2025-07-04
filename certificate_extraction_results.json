@@ -15,7 +15,7 @@
         "certification_date": "02/21/2025",
         "authorized_signature": "Giancarlo S Campodonico",
         "traceability_source": "PO 11421 - 145-Logistica Aeroespacial S.A. de C.V",
-        "additional_notes": "The Part(s) is / are not from a military or government source and has / have not been subjected to severe stress or heat (as in a major engine failure, accident, or fire).",
+        "additional_notes": "The Part(s) is / are not from a military or government source and has / have not been subjected to severe stress or heat.",
         "document_source": "1. UNREGULATED SOURCE EXAMPLE.md"
       },
       {
@@ -49,11 +49,11 @@
         "certification_date": "28/07/2023",
         "authorized_signature": "Victor Mendoza",
         "traceability_source": "ATO Aviation Group LLC.",
-        "additional_notes": "The above referenced part(s) was/were not obtained from any government or military source, and was/were not subject to severe stress, heat or immersed in salt water (as in a major engine failure, accident or fire).",
+        "additional_notes": "The above referenced part(s) was/were not obtained from any government or military source, and was/were not subject to severe stress, heat or immersed in salt water.",
         "document_source": "1. UNREGULATED SOURCE EXAMPLE.md"
       },
       {
-        "certificate_type": "Certificate of Conformance/Conformity",
+        "certificate_type": "Part or Material Certification Form (ATA Specification 106)",
         "part_number": "2606672-4",
         "serial_number": "8093",
         "description": "BRAKE",
@@ -66,7 +66,7 @@
         "certification_date": "01/27/2025",
         "authorized_signature": "Gerardo Conde Lopez",
         "traceability_source": "ATO Aviation Group/ Aviacsa",
-        "additional_notes": "THIS IS TO CERTIFY THAT THE COMPONENTS LISTED ABOVE TO THE BEST OF KNOWLEDGE AND ABILITIES HAVE NOT SHOWN EVIDENCE BY DOCUMENTATION AND DISCLAIMER TO HAVE BEEN SUBJECTED TO SEVERE STRESS OR HEAT AS IN ACCIDENT OR INCIDENT. REMAINING PIN LENGTH 100% ITEMS HAS NOT BEEN OBTAINED FROM NON-CIVIL AVIATION SOURCES AND ARE TRACEABLE TO ONE OF THE CERTIFYING SOURCES BELOW.",
+        "additional_notes": "THIS IS TO CERTIFY THAT THE COMPONENTS LISTED ABOVE TO THE BEST OF KNOWLEDGE AND ABILITIES HAVE NOT SHOWN EVIDENCE BY DOCUMENTATION AND DISCLAIMER TO HAVE BEEN SUBJECTED TO SEVERE STRESS OR HEAT AS IN ACCIDENT OR INCIDENT.",
         "document_source": "1. UNREGULATED SOURCE EXAMPLE.md"
       }
     ]
@@ -75,9 +75,8 @@
     "total_documents_processed": 1,
     "total_certificates_extracted": 4,
     "certificates_by_type": {
-      "Part or Material Certification Form (ATA Specification 106)": 2,
-      "FAA Form 8130-3 (Authorized Release Certificate)": 1,
-      "Certificate of Conformance/Conformity": 1
+      "Part or Material Certification Form (ATA Specification 106)": 3,
+      "FAA Form 8130-3 (Authorized Release Certificate)": 1
     },
     "certificates_by_manufacturer": {
       "HONEYWELL": 1
@@ -89,6 +88,6 @@
     "files_processed": [
       "1. UNREGULATED SOURCE EXAMPLE.md"
     ],
-    "extraction_timestamp": "2025-07-04T00:48:28.714990"
+    "extraction_timestamp": "2025-07-04T01:02:49.032003"
   }
 }

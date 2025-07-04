@@ -7,9 +7,6 @@ import openai
 from openai import OpenAI
 import logging
 from datetime import datetime
-from dotenv import load_dotenv
-
-load_dotenv(".env")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -19,20 +16,27 @@ logger = logging.getLogger(__name__)
 class CertificateInfo:
     """Data class for certificate information"""
     certificate_type: str
+    document_source: str
     part_number: Optional[str] = None
     serial_number: Optional[str] = None
     description: Optional[str] = None
     condition_code: Optional[str] = None
     quantity: Optional[str] = None
+    batch_lot: Optional[str] = None
     manufacturer: Optional[str] = None
     seller_name: Optional[str] = None
     buyer_name: Optional[str] = None
+    purchase_order: Optional[str] = None
     invoice_number: Optional[str] = None
     certification_date: Optional[str] = None
     authorized_signature: Optional[str] = None
+    approval_number: Optional[str] = None
     traceability_source: Optional[str] = None
+    last_operator: Optional[str] = None
+    work_performed: Optional[str] = None
+    airworthiness_authority: Optional[str] = None
+    non_incident_statement: Optional[str] = None
     additional_notes: Optional[str] = None
-    document_source: Optional[str] = None
 
 class CertificateExtractor:
     """Main class for extracting certificate information from aviation documents"""
@@ -51,32 +55,38 @@ class CertificateExtractor:
             "FAA_8130-3": "FAA Form 8130-3 (Authorized Release Certificate)",
             "COC": "Certificate of Conformance/Conformity",
             "MATERIAL_CERT": "Material Certification",
-            # "WORK_ORDER": "Work Order Documentation",
-            # "TEARDOWN": "Teardown Report",
-            # "PACKING_SLIP": "Packing Slip with Certification",
-            # "BILL_OF_SALE": "Bill of Sale",
-            # "CONSIGNMENT": "Consignment Documentation",
+            "WORK_ORDER": "Work Order Documentation",
+            "TEARDOWN": "Teardown Report",
+            "PACKING_SLIP": "Packing Slip with Certification",
+            "BILL_OF_SALE": "Bill of Sale",
+            "CONSIGNMENT": "Consignment Documentation",
             "OEM_CERT": "OEM Manufacturer Certification",
-            # "EUROPEAN_COC": "European Certificate of Conformity (EN10204)"
+            "EUROPEAN_COC": "European Certificate of Conformity (EN10204)"
         }
     
     def create_extraction_prompt(self, document_content: str) -> str:
         """Create a detailed prompt for certificate extraction"""
         
         prompt = f"""
-You are an expert aviation document analyzer. Extract ONLY certificate information from this aviation document where SKYLINK is the buyer.
+You are an expert aviation document analyzer. Extract ALL certificate information from this aviation document.
 
 DOCUMENT CONTENT:
 {document_content}
 
-EXTRACT THE FOLLOWING INFORMATION FOR EACH CERTIFICATE WHERE SKYLINK IS THE BUYER:
+EXTRACT THE FOLLOWING INFORMATION FOR EACH CERTIFICATE FOUND:
 
 1. **Certificate Type** - Identify from these types:
    - Part or Material Certification Form (ATA Specification 106)
    - FAA Form 8130-3 (Authorized Release Certificate)
    - Certificate of Conformance/Conformity
    - Material Certification
+   - Work Order Documentation
+   - Teardown Report
+   - Packing Slip with Certification
+   - Bill of Sale
+   - Consignment Documentation
    - OEM Manufacturer Certification
+   - European Certificate of Conformity (EN10204)
 
 2. **Part Information:**
    - Part Number
@@ -84,19 +94,26 @@ EXTRACT THE FOLLOWING INFORMATION FOR EACH CERTIFICATE WHERE SKYLINK IS THE BUYE
    - Description
    - Condition Code (NS, OH, NE, SV, etc.)
    - Quantity
+   - Batch/Lot Number
    - Manufacturer
 
 3. **Transaction Details:**
    - Seller Name
-   - Buyer Name (must be SKYLINK or contain SKYLINK)
+   - Buyer Name
+   - Purchase Order Number
    - Invoice Number
    - Certification Date
 
 4. **Certification Details:**
-   - Authorized Signature (person name) (if applicable)
+   - Authorized Signature (person name)
+   - Approval Number
+   - Airworthiness Authority (FAA, EASA, etc.)
+   - Work Performed (if applicable)
 
 5. **Traceability:**
    - Traceability Source
+   - Last Operator/Airline
+   - Non-incident Statement
 
 6. **Additional Notes:**
    - Any special remarks or conditions
@@ -105,30 +122,36 @@ RETURN RESULTS AS JSON ARRAY:
 [
   {{
     "certificate_type": "...",
+    "document_source": "...",
     "part_number": "...",
     "serial_number": "...",
     "description": "...",
     "condition_code": "...",
     "quantity": "...",
+    "batch_lot": "...",
     "manufacturer": "...",
     "seller_name": "...",
     "buyer_name": "...",
+    "purchase_order": "...",
     "invoice_number": "...",
     "certification_date": "...",
     "authorized_signature": "...",
+    "approval_number": "...",
     "traceability_source": "...",
+    "last_operator": "...",
+    "work_performed": "...",
+    "airworthiness_authority": "...",
+    "non_incident_statement": "...",
     "additional_notes": "..."
   }}
 ]
 
 IMPORTANT: 
-- Extract ONLY certificates where SKYLINK is the buyer (buyer_name contains "SKYLINK")
-- Skip certificates where the buyer is not SKYLINK
+- Extract ALL certificates found in the document
 - Use null for missing information
 - Be precise with part numbers and technical details
 - Include complete traceability information
 - Identify specific certificate types accurately
-- Return empty array [] if no SKYLINK certificates found
 """
         return prompt
 
@@ -158,7 +181,7 @@ IMPORTANT:
                 result_text = result_text.split("```")[1].split("```")[0]
             
             certificates_data = json.loads(result_text)
-            print(len(certificates_data))
+            
             # Convert to CertificateInfo objects
             certificates = []
             for cert_data in certificates_data:
@@ -266,9 +289,9 @@ IMPORTANT:
 
 def main():
     """Main function to run the certificate extraction"""
-    api_key = os.getenv("OPENAI_API_KEY")
+    
     # Initialize extractor
-    extractor = CertificateExtractor(api_key)
+    extractor = CertificateExtractor()
     
     # Process the markdowns directory
     markdowns_dir = "markdowns"
