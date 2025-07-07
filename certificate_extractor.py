@@ -125,7 +125,7 @@ CRITICAL: Your entire output must be ONLY the JSON array. Do not include any doc
 """
         return prompt
 
-    def extract_certificates_from_text(self, document_content: str, document_name: str) -> List[CertificateInfo]:
+    def extract_certificates_from_text(self, document_content: str, document_name: str = "Unknown") -> List[CertificateInfo]:
         """Extract certificates from document text using OpenAI with enhanced accuracy"""
         
         try:

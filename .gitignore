@@ -7,3 +7,7 @@
 # Markdown files
 ASA-100.md
 *.json
+/test
+
+/html_reports
+/validation_results
