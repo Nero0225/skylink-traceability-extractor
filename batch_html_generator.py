@@ -70,8 +70,8 @@ class BatchHTMLGenerator:
         
         # Sort documents by compliance status
         documents_data.sort(key=lambda x: (
-            0 if x['traceability_type'] in ['OEM', '121', '129', '135', '145'] else 1,
-            x['document_name']
+            x['document_name'],
+            0 if x['traceability_type'] in ['OEM', '121', '129', '135', '145'] else 1
         ))
         
         dashboard_html = f"""
