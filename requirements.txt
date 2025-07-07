@@ -1,3 +1,11 @@
 llama_cloud_services
-openai>=1.0.0
-python-dotenv>=0.19.0
+openai
+python-dotenv
+
+fastapi
+uvicorn[standard]
+python-multipart
+tenacity
+pydantic
+jinja2
+aiofiles
