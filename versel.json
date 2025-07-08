@@ -1,14 +1,14 @@
 {
     "builds": [
       {
-        "src": "/index.py",
+        "src": "/fastapi_pdf_processor.py",
         "use": "@vercel/python"
       }
     ],
     "routes": [
       {
         "src": "/(.*)",
-        "dest": "/index.py"
+        "dest": "/fastapi_pdf_processor.py"
       }
     ]
   }
