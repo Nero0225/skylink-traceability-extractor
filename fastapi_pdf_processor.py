@@ -1,6 +1,7 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 import os
@@ -28,6 +29,14 @@ app = FastAPI(
     title="Aviation Traceability PDF Processor",
     description="Upload PDF documents to extract certificates and validate traceability compliance",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Initialize components
@@ -362,7 +371,7 @@ async def process_pdf(files: List[UploadFile] = File(...)):
         # Step 2: Extract certificates from markdown
         logger.info("Step 2: Extracting certificates...")
         certificates = extractor.extract_certificates_from_text(markdown_content, file.filename)
-        
+        # print(certificates)
         if not certificates:
             raise Exception("No certificates found in document")
         
@@ -376,6 +385,10 @@ async def process_pdf(files: List[UploadFile] = File(...)):
         if not target_cert:
             target_cert = certificates[0]
         
+        # with open("results/target_cert.json", "w") as f:
+        #     import json
+        #     json.dump(target_cert, f, indent=4)
+
         # Step 4: Validate traceability
         logger.info("Step 3: Validating traceability...")
         certificates_dict = [asdict(cert) for cert in certificates]
