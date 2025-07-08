@@ -39,9 +39,17 @@ def main():
     os.makedirs("processed_reports", exist_ok=True)
     
     print("🚀 Starting Aviation Traceability PDF Processor...")
+    print("=" * 60)
     print("📡 Server will be available at: http://localhost:8000")
     print("📊 API documentation at: http://localhost:8000/docs")
     print("🔧 Health check at: http://localhost:8000/health")
+    print("=" * 60)
+    print("\n✨ Features:")
+    print("   • Modern drag-and-drop interface")
+    print("   • Multiple file upload support")
+    print("   • Real-time file selection preview")
+    print("   • Batch processing with parallel execution")
+    print("   • Beautiful results dashboard")
     print("\nPress Ctrl+C to stop the server")
     
     # Run the FastAPI application

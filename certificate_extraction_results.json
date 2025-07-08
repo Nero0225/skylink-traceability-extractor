@@ -1,0 +1,204 @@
+{
+  "extraction_results": {
+    "1. UNREGULATED SOURCE EXAMPLE.md": [
+      {
+        "certificate_type": "Part or Material Certification Form (ATA Specification 106)",
+        "part_number": "2606672-4",
+        "serial_number": "B8093",
+        "description": "BRAKE",
+        "condition_code": "OH",
+        "quantity": "1",
+        "manufacturer": null,
+        "seller_name": "Aircraft Parts Logistic",
+        "buyer_name": "Skylink, Inc.",
+        "certification_date": "02/21/2025",
+        "authorized_signature": "Giancarlo S Campodonico",
+        "traceability_source": "PO 11421 - 145-Logistica Aeroespacial S.A. de C.V"
+      },
+      {
+        "certificate_type": "FAA Form 8130-3 (Authorized Release Certificate)",
+        "part_number": "2606672-4",
+        "serial_number": "B8093",
+        "description": "Brake",
+        "condition_code": "OVERHAULED",
+        "quantity": "1",
+        "manufacturer": null,
+        "seller_name": "B & W Aviation Corp",
+        "buyer_name": null,
+        "certification_date": "20/Feb/2025",
+        "authorized_signature": "Jeremy C Noria",
+        "traceability_source": null
+      }
+    ],
+    "2. 121 FULL TRACE EXAMPLE.md": [
+      {
+        "certificate_type": "Part or Material Certification Form (ATA Specification 106)",
+        "part_number": "NAS1474-C06",
+        "serial_number": null,
+        "description": "NUT PLATE",
+        "condition_code": "NS",
+        "quantity": "50",
+        "manufacturer": null,
+        "seller_name": "Avsource International Inc.",
+        "buyer_name": "SKYLINK INC",
+        "certification_date": "5/6/2025",
+        "authorized_signature": "[Signed]",
+        "traceability_source": "121 US AIRWAYS"
+      }
+    ],
+    "3. OEM TRACE EXAMPLE.md": [
+      {
+        "certificate_type": "Certificate of Conformance/Conformity",
+        "part_number": "MS20470AD4-5.5",
+        "serial_number": null,
+        "description": "RIVET, SOLID",
+        "condition_code": null,
+        "quantity": "2500",
+        "manufacturer": "AHG ATELIERS HAUTE-GARONNE",
+        "seller_name": "Boeing Distribution Services Inc.",
+        "buyer_name": "SKYLINK",
+        "certification_date": "01/30/24",
+        "authorized_signature": "Jennifer Russell",
+        "traceability_source": "Purchase Order#: 154748"
+      },
+      {
+        "certificate_type": "European Certificate of Conformity (EN10204)",
+        "part_number": "MS20470AD4-5.5",
+        "serial_number": null,
+        "description": "RIVET, SOLID",
+        "condition_code": null,
+        "quantity": "12,000 Lb.",
+        "manufacturer": "AHG ATELIERS HAUTE-GARONNE",
+        "seller_name": "AHG ATELIERS DE LA HAUTE-GARONNE",
+        "buyer_name": "BOEING DISTRIBUTION SERV.INC",
+        "certification_date": "06 FEB 2024",
+        "authorized_signature": "MICELI SYLVIE",
+        "traceability_source": "Lot nb 224019C462"
+      }
+    ],
+    "4. TRACE BACK TO MANUFACTURER.md": [
+      {
+        "certificate_type": "Part or Material Certification Form (ATA Specification 106)",
+        "part_number": "18-200",
+        "serial_number": null,
+        "description": "QUICK CONNECT PLUG",
+        "condition_code": "NS",
+        "quantity": "2",
+        "manufacturer": null,
+        "seller_name": "DSC Trading, LLC",
+        "buyer_name": "Skylink, Inc.",
+        "certification_date": "7/29/2024",
+        "authorized_signature": "Leo Coury",
+        "traceability_source": "BizJet PO# P21576"
+      },
+      {
+        "certificate_type": "Certificate of Conformance/Conformity",
+        "part_number": "18-200",
+        "serial_number": null,
+        "description": "18-200 CTS CONN. PLUG - Compact",
+        "condition_code": null,
+        "quantity": "2",
+        "manufacturer": "Applied Avionics, Inc.",
+        "seller_name": "Applied Avionics, Inc.",
+        "buyer_name": "Bizjet International",
+        "certification_date": "1/24/2018",
+        "authorized_signature": "Margie Jimenez",
+        "traceability_source": "Purchase Order 197159"
+      }
+    ],
+    "5. LOT PACKAGE EXAMPLE.md": [
+      {
+        "certificate_type": "Part or Material Certification Form (ATA Specification 106)",
+        "part_number": "132500-04",
+        "serial_number": "N/A",
+        "description": "ROLLER LINER",
+        "condition_code": "NEW SURPLUS",
+        "quantity": "2",
+        "manufacturer": null,
+        "seller_name": "Aventure Int'l Aviation Services",
+        "buyer_name": "SKYLINK, INC",
+        "certification_date": "19/May/2025",
+        "authorized_signature": "Anisha Ellison",
+        "traceability_source": null
+      }
+    ],
+    "6. EXAMPLE 1. BOEING MULTIPLE LINES FULL TRACE.md": [
+      {
+        "certificate_type": "Certificate of Conformance/Conformity",
+        "part_number": "MS21299C5",
+        "serial_number": null,
+        "description": "WASHER: CSK",
+        "condition_code": null,
+        "quantity": "100",
+        "manufacturer": null,
+        "seller_name": "Boeing Distribution, Inc.",
+        "buyer_name": "SKYLINK INC",
+        "certification_date": "06MAY25",
+        "authorized_signature": "JR Hofmann",
+        "traceability_source": null
+      }
+    ],
+    "7. EXAMPLE 2. PERFECT TRACE.md": [
+      {
+        "certificate_type": "Part or Material Certification Form (ATA Specification 106)",
+        "part_number": "9520987",
+        "serial_number": "NA",
+        "description": "RING",
+        "condition_code": "New Surplus",
+        "quantity": "15",
+        "manufacturer": null,
+        "seller_name": "AvAir",
+        "buyer_name": "Skylink, Inc.",
+        "certification_date": "05/07/2025",
+        "authorized_signature": "Arianna Flores",
+        "traceability_source": "ENDEAVOR AIR"
+      },
+      {
+        "certificate_type": "Part or Material Certification Form (ATA Specification 106)",
+        "part_number": "9525152",
+        "serial_number": "NA",
+        "description": "PLUG FUSIBLE",
+        "condition_code": "New Surplus",
+        "quantity": "5",
+        "manufacturer": null,
+        "seller_name": "AvAir",
+        "buyer_name": "Skylink, Inc.",
+        "certification_date": "05/07/2025",
+        "authorized_signature": "Arianna Flores",
+        "traceability_source": "ENDEAVOR AIR"
+      }
+    ],
+    "8. PACKING SLIP WITH COC ON 1 DOC.md": [
+      {
+        "certificate_type": "Certificate of Conformance/Conformity",
+        "part_number": "295957-5A",
+        "serial_number": null,
+        "description": "GROMMET, NONMETALLIC",
+        "condition_code": "NS",
+        "quantity": "5",
+        "manufacturer": null,
+        "seller_name": "A&E Parts, Inc.",
+        "buyer_name": "SKYLINK, INC.",
+        "certification_date": "5/6/2025",
+        "authorized_signature": "Authorized Signature",
+        "traceability_source": "A&E C OF C"
+      }
+    ],
+    "9. PACKING SLIP AND COC AS SEPARATE.md": [
+      {
+        "certificate_type": "Certificate of Conformance/Conformity",
+        "part_number": "339129",
+        "serial_number": "21046-1",
+        "description": "BUSHING,SLEEVE",
+        "condition_code": "NS",
+        "quantity": "1",
+        "manufacturer": null,
+        "seller_name": "MJ Aerospace",
+        "buyer_name": "SKYLINK INC",
+        "certification_date": "5/7/2025",
+        "authorized_signature": "Felecity Ortiz",
+        "traceability_source": "PO-157618"
+      }
+    ]
+  }
+}

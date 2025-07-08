@@ -145,56 +145,7 @@ async def root():
                 margin-bottom: 30px;
             }
             
-            .upload-options {
-                display: flex;
-                gap: 15px;
-                margin-bottom: 30px;
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-            
-            .upload-option {
-                flex: 1;
-                min-width: 150px;
-                position: relative;
-            }
-            
-            .upload-option input[type="radio"] {
-                position: absolute;
-                opacity: 0;
-            }
-            
-            .upload-option label {
-                display: block;
-                padding: 15px 20px;
-                background: white;
-                border: 2px solid #dee2e6;
-                border-radius: 10px;
-                text-align: center;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                font-weight: 500;
-            }
-            
-            .upload-option input[type="radio"]:checked + label {
-                background: #007bff;
-                color: white;
-                border-color: #007bff;
-                transform: translateY(-2px);
-                box-shadow: 0 5px 15px rgba(0,123,255,0.3);
-            }
-            
-            .upload-option label:hover {
-                border-color: #007bff;
-                transform: translateY(-1px);
-            }
-            
-            .upload-option .icon {
-                font-size: 1.5em;
-                margin-bottom: 5px;
-                display: block;
-            }
-            
+
             .drop-zone {
                 border: 3px dashed #007bff;
                 border-radius: 15px;
@@ -444,10 +395,6 @@ async def root():
                     padding: 20px;
                 }
                 
-                .upload-options {
-                    flex-direction: column;
-                }
-                
                 .drop-zone {
                     padding: 40px 20px;
                 }
@@ -469,39 +416,15 @@ async def root():
                 <div class="upload-section">
                     <h2 style="text-align: center; margin-bottom: 30px; color: #1e3c72;">Upload Your Documents</h2>
                     
-                    <div class="upload-options">
-                        <div class="upload-option">
-                            <input type="radio" name="uploadType" id="single" value="single" checked>
-                            <label for="single">
-                                <span class="icon">📄</span>
-                                Single File
-                            </label>
-                        </div>
-                        <div class="upload-option">
-                            <input type="radio" name="uploadType" id="multiple" value="multiple">
-                            <label for="multiple">
-                                <span class="icon">📚</span>
-                                Multiple Files
-                            </label>
-                        </div>
-                        <div class="upload-option">
-                            <input type="radio" name="uploadType" id="folder" value="folder">
-                            <label for="folder">
-                                <span class="icon">📁</span>
-                                Entire Folder
-                            </label>
-                        </div>
-                    </div>
-                    
                     <form id="uploadForm" enctype="multipart/form-data">
                         <div class="drop-zone" id="dropZone">
                             <div class="drop-zone-icon">📤</div>
                             <div class="drop-zone-text">Drag & drop your PDF files here</div>
-                            <div class="drop-zone-hint">or click to browse</div>
+                            <div class="drop-zone-hint">or click to browse for multiple files</div>
                             
                             <div class="file-input-wrapper">
-                                <input type="file" id="fileInput" name="files" accept=".pdf" required>
-                                <label for="fileInput" class="file-input-label">Choose Files</label>
+                                <input type="file" id="fileInput" name="files" accept=".pdf" multiple required>
+                                <label for="fileInput" class="file-input-label">Choose Multiple Files</label>
                             </div>
                         </div>
                         
@@ -550,14 +473,6 @@ async def root():
                 const processButton = document.getElementById('processButton');
                 const selectedFilesDiv = document.getElementById('selectedFiles');
                 
-                // Handle upload type changes
-                document.querySelectorAll('input[name="uploadType"]').forEach(radio => {
-                    radio.addEventListener('change', function() {
-                        updateFileInput();
-                        clearSelectedFiles();
-                    });
-                });
-                
                 // Handle drag and drop
                 dropZone.addEventListener('dragover', (e) => {
                     e.preventDefault();
@@ -590,40 +505,11 @@ async def root():
                 });
             });
             
-            function updateFileInput() {
-                const fileInput = document.getElementById('fileInput');
-                const uploadType = document.querySelector('input[name="uploadType"]:checked').value;
-                const fileLabel = document.querySelector('.file-input-label');
-                
-                if (uploadType === 'single') {
-                    fileInput.multiple = false;
-                    fileInput.removeAttribute('webkitdirectory');
-                    fileInput.setAttribute('accept', '.pdf');
-                    fileLabel.textContent = 'Choose File';
-                } else if (uploadType === 'multiple') {
-                    fileInput.multiple = true;
-                    fileInput.removeAttribute('webkitdirectory');
-                    fileInput.setAttribute('accept', '.pdf');
-                    fileLabel.textContent = 'Choose Files';
-                } else if (uploadType === 'folder') {
-                    fileInput.multiple = true;
-                    fileInput.setAttribute('webkitdirectory', '');
-                    fileInput.setAttribute('accept', '.pdf');
-                    fileLabel.textContent = 'Choose Folder';
-                }
-            }
-            
             function handleFileSelection(files) {
-                const uploadType = document.querySelector('input[name="uploadType"]:checked').value;
-                
                 // Filter for PDF files only
                 const pdfFiles = files.filter(file => file.name.toLowerCase().endsWith('.pdf'));
                 
-                if (uploadType === 'single' && pdfFiles.length > 0) {
-                    selectedFiles = [pdfFiles[0]];
-                } else {
-                    selectedFiles = pdfFiles;
-                }
+                selectedFiles = pdfFiles;
                 
                 updateSelectedFilesDisplay();
                 updateProcessButton();
@@ -637,7 +523,7 @@ async def root():
                 if (selectedFiles.length === 0) {
                     selectedFilesDiv.style.display = 'none';
                     dropZoneText.textContent = 'Drag & drop your PDF files here';
-                    dropZoneHint.textContent = 'or click to browse';
+                    dropZoneHint.textContent = 'or click to browse for multiple files';
                     return;
                 }
                 
@@ -723,26 +609,17 @@ async def root():
                 statusDiv.style.display = 'block';
                 statusDiv.className = 'processing';
                 
-                if (selectedFiles.length === 1) {
-                    statusDiv.innerHTML = `
-                        <h3>🔄 Processing Document</h3>
-                        <p>Analyzing ${selectedFiles[0].name}...</p>
-                        <div class="progress-bar">
-                            <div class="progress-bar-fill"></div>
-                        </div>
-                    `;
-                } else {
-                    statusDiv.innerHTML = `
-                        <h3>🔄 Processing ${selectedFiles.length} Documents</h3>
-                        <p>This may take several minutes. Processing files in parallel...</p>
-                        <div class="progress-bar">
-                            <div class="progress-bar-fill"></div>
-                        </div>
-                    `;
-                }
+                statusDiv.innerHTML = `
+                    <h3>🔄 Processing ${selectedFiles.length} Document${selectedFiles.length > 1 ? 's' : ''}</h3>
+                    <p>${selectedFiles.length > 1 ? 'Processing files in parallel. This may take several minutes...' : `Analyzing ${selectedFiles[0].name}...`}</p>
+                    <div class="progress-bar">
+                        <div class="progress-bar-fill"></div>
+                    </div>
+                `;
                 
                 try {
-                    const endpoint = selectedFiles.length === 1 ? '/process-pdf' : '/process-pdf-batch';
+                    // Always use batch endpoint for multiple files
+                    const endpoint = '/process-pdf-batch';
                     const response = await fetch(endpoint, {
                         method: 'POST',
                         body: formData
@@ -753,41 +630,9 @@ async def root():
                     if (result.success) {
                         statusDiv.className = 'success';
                         
-                        if (selectedFiles.length === 1) {
-                            // Single file result
-                            statusDiv.innerHTML = `
-                                <h3>✅ Processing Complete!</h3>
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
-                                    <div>
-                                        <strong style="color: #6c757d; font-size: 0.9em;">Document ID</strong>
-                                        <p style="margin: 5px 0;">${result.document_id}</p>
-                                    </div>
-                                    <div>
-                                        <strong style="color: #6c757d; font-size: 0.9em;">Part Number</strong>
-                                        <p style="margin: 5px 0;">${result.part_number || 'N/A'}</p>
-                                    </div>
-                                    <div>
-                                        <strong style="color: #6c757d; font-size: 0.9em;">Traceability Type</strong>
-                                        <p style="margin: 5px 0;">${result.traceability_type || 'N/A'}</p>
-                                    </div>
-                                    <div>
-                                        <strong style="color: #6c757d; font-size: 0.9em;">Compliance Status</strong>
-                                        <p style="margin: 5px 0;">${result.compliance_status || 'N/A'}</p>
-                                    </div>
-                                    <div>
-                                        <strong style="color: #6c757d; font-size: 0.9em;">Processing Time</strong>
-                                        <p style="margin: 5px 0;">${result.processing_time}s</p>
-                                    </div>
-                                </div>
-                                <a href="${result.html_report_url}" target="_blank" 
-                                   style="display: inline-block; margin-top: 20px; padding: 12px 30px; background: #007bff; color: white; text-decoration: none; border-radius: 50px; font-weight: 600;">
-                                    📊 View Detailed Report
-                                </a>
-                            `;
-                        } else {
-                            // Batch processing result
-                            const successRate = Math.round((result.successful_files / result.total_files) * 100);
-                            statusDiv.innerHTML = `
+                        // Always show batch processing result
+                        const successRate = Math.round((result.successful_files / result.total_files) * 100);
+                        statusDiv.innerHTML = `
                                 <h3>✅ Batch Processing Complete!</h3>
                                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin: 20px 0;">
                                     <div style="text-align: center;">
@@ -812,10 +657,9 @@ async def root():
                                 </p>
                                 <a href="${result.dashboard_url}" target="_blank" 
                                    style="display: inline-block; margin-top: 20px; padding: 12px 30px; background: #007bff; color: white; text-decoration: none; border-radius: 50px; font-weight: 600;">
-                                    📊 View Batch Dashboard
-                                </a>
-                            `;
-                        }
+                                                                    📊 View Batch Dashboard
+                            </a>
+                        `;
                     } else {
                         statusDiv.className = 'error';
                         statusDiv.innerHTML = `
