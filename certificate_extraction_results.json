@@ -34,11 +34,11 @@
       {
         "certificate_type": "Part or Material Certification Form (ATA Specification 106)",
         "part_number": "NAS1474-C06",
-        "serial_number": null,
+        "serial_number": "",
         "description": "NUT PLATE",
         "condition_code": "NS",
         "quantity": "50",
-        "manufacturer": null,
+        "manufacturer": "None Specified",
         "seller_name": "Avsource International Inc.",
         "buyer_name": "SKYLINK INC",
         "certification_date": "5/6/2025",
@@ -57,7 +57,7 @@
         "manufacturer": "AHG ATELIERS HAUTE-GARONNE",
         "seller_name": "Boeing Distribution Services Inc.",
         "buyer_name": "SKYLINK",
-        "certification_date": "01/30/24",
+        "certification_date": "07/30/24",
         "authorized_signature": "Jennifer Russell",
         "traceability_source": "Purchase Order#: 154748"
       },
@@ -130,12 +130,26 @@
         "description": "WASHER: CSK",
         "condition_code": null,
         "quantity": "100",
-        "manufacturer": null,
-        "seller_name": "Boeing Distribution, Inc.",
+        "manufacturer": "MOELLER MANUFACTURING",
+        "seller_name": "BOEING DISTRIBUTION, INC.",
         "buyer_name": "SKYLINK INC",
         "certification_date": "06MAY25",
         "authorized_signature": "JR Hofmann",
-        "traceability_source": null
+        "traceability_source": "BATCH 7366202892"
+      },
+      {
+        "certificate_type": "Certificate of Conformance/Conformity",
+        "part_number": "NAS620C10L",
+        "serial_number": null,
+        "description": "WASHER: FLT,CRES",
+        "condition_code": null,
+        "quantity": "100",
+        "manufacturer": "ANILLO INDUSTRIES",
+        "seller_name": "BOEING DISTRIBUTION, INC.",
+        "buyer_name": "SKYLINK INC",
+        "certification_date": "06MAY25",
+        "authorized_signature": "JR Hofmann",
+        "traceability_source": "BATCH 7366193569"
       }
     ],
     "7. EXAMPLE 2. PERFECT TRACE.md": [
@@ -196,7 +210,7 @@
         "seller_name": "MJ Aerospace",
         "buyer_name": "SKYLINK INC",
         "certification_date": "5/7/2025",
-        "authorized_signature": "Felecity Ortiz",
+        "authorized_signature": "Signature",
         "traceability_source": "PO-157618"
       }
     ]

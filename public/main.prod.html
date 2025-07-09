@@ -5,22 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aviation Traceability PDF Processor</title>
     
+    <!-- Critical CSS inlined for fastest render -->
+    <style>
+        body{margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh}
+        .container{max-width:1200px;margin:0 auto;padding:20px;min-height:100vh;display:flex;flex-direction:column}
+        .header{text-align:center;color:white;margin-bottom:40px}
+        .header h1{font-size:2.5em;margin:0 0 10px 0;text-shadow:2px 2px 4px rgba(0,0,0,.3)}
+    </style>
+    
     <!-- Preload critical resources -->
     <link rel="preload" href="/public/css/styles.css" as="style">
-    <link rel="preload" href="/public/css/main.css" as="style">
+    <link rel="preload" href="/public/css/main.min.css" as="style">
     <link rel="preload" href="/public/js/main.js" as="script">
     
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/public/css/styles.css">
-    <link rel="stylesheet" href="/public/css/main.css">
+    <link rel="stylesheet" href="/public/css/main.min.css">
     
     <!-- Meta tags for SEO and performance -->
     <meta name="description" content="Upload PDF documents to extract aviation certificates and validate traceability compliance according to ASA-100 standards">
     <meta name="keywords" content="aviation, traceability, PDF, certificates, ASA-100, compliance">
     <meta name="theme-color" content="#1e3c72">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph tags -->
+    <meta property="og:title" content="Aviation Traceability PDF Processor">
+    <meta property="og:description" content="Extract certificates and validate compliance according to ASA-100 standards">
+    <meta property="og:type" content="website">
     
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>✈️</text></svg>">
+    
+    <!-- DNS prefetch for external resources -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
 </head>
 <body>
     <div class="container">
@@ -103,13 +120,20 @@
     <script src="/public/js/main.js" defer></script>
     <script src="/public/js/app.js" defer></script>
     
-    <!-- Service Worker for offline functionality (optional) -->
+    <!-- Service Worker for offline functionality -->
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/public/sw.js').catch(() => {
-                // Service worker registration failed, but app still works
-            });
-        }
+        if('serviceWorker' in navigator){navigator.serviceWorker.register('/public/sw.js').catch(()=>{})}
+    </script>
+    
+    <!-- Analytics placeholder (can be replaced with actual analytics) -->
+    <script>
+        // Performance monitoring
+        window.addEventListener('load', () => {
+            if ('performance' in window) {
+                const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                console.log(`✈️ Page loaded in ${loadTime}ms`);
+            }
+        });
     </script>
 </body>
 </html> 

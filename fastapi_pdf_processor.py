@@ -136,7 +136,7 @@ async def root():
     
     # Fallback to embedded HTML with enhanced styling
     return """
-    null
+        404 Page not found.
     """
 
 @app.post("/process-pdf", response_model=ProcessingResult)
@@ -182,6 +182,12 @@ async def process_pdf(files: List[UploadFile] = File(...)):
                 target_cert = cert
                 break
         
+        # print("="*100)
+        # print(certificates)
+        # print("="*100)
+
+        logger.info(f"Target cert: {certificates}")
+
         if not target_cert:
             target_cert = certificates[0]
         
@@ -398,6 +404,9 @@ async def process_pdf_batch(files: List[UploadFile] = File(...)):
     tasks = [process_with_semaphore(file) for file in pdf_files]
     results = await asyncio.gather(*tasks, return_exceptions=True)
     
+    print("="*100)
+    print(results)
+    print("="*100)
     # Convert exceptions to ProcessingResult objects
     processing_results = []
     for i, result in enumerate(results):
