@@ -272,7 +272,7 @@ window.AviationTraceability = {
     showNotification,
     formatFileSize,
     formatDate,
-    checkSystemStatus
+    // checkSystemStatus
 };
 
 // Add keyboard shortcuts
