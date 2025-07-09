@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviation Traceability PDF Processor</title>
+    <link rel="stylesheet" href="/public/css/styles.css">
+    <style>
+        /* Additional styles specific to main application */
+        .upload-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .drop-zone {
+            border: 3px dashed #007bff;
+            border-radius: 15px;
+            padding: 60px 40px;
+            text-align: center;
+            background: white;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .drop-zone.drag-over {
+            background: #e7f3ff;
+            border-color: #0056b3;
+            transform: scale(1.02);
+        }
+        
+        .drop-zone-icon {
+            font-size: 4em;
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+        
+        .drop-zone-text {
+            font-size: 1.2em;
+            color: #495057;
+            margin-bottom: 10px;
+        }
+        
+        .drop-zone-hint {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        
+        .file-input-wrapper input[type="file"] {
+            position: absolute;
+            left: -9999px;
+        }
+        
+        .file-input-label {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #007bff;
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .file-input-label:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+        }
+        
+        .selected-files {
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .selected-file {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .selected-file-name {
+            flex: 1;
+            font-size: 0.9em;
+            color: #495057;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .selected-file-size {
+            font-size: 0.8em;
+            color: #6c757d;
+            margin-left: 10px;
+        }
+        
+        .remove-file {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 1.2em;
+            padding: 0 5px;
+            transition: all 0.2s ease;
+        }
+        
+        .remove-file:hover {
+            transform: scale(1.2);
+        }
+        
+        .process-button {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            padding: 15px 50px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 30px auto 0;
+            display: block;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0,123,255,0.3);
+        }
+        
+        .process-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,123,255,0.4);
+        }
+        
+        .process-button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        #status {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .success { 
+            background: #d4edda; 
+            color: #155724; 
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error { 
+            background: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb;
+        }
+        
+        .processing { 
+            background: #fff3cd; 
+            color: #856404; 
+            border: 1px solid #ffeaa7;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #e9ecef;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+        
+        .progress-bar-fill {
+            height: 100%;
+            background: #007bff;
+            width: 0%;
+            animation: progress 2s ease-in-out infinite;
+        }
+        
+        @keyframes progress {
+            0% { width: 0%; }
+            50% { width: 70%; }
+            100% { width: 100%; }
+        }
+        
+        .navigation-bar {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .nav-link {
+            display: inline-block;
+            padding: 10px 15px;
+            background: rgba(30, 60, 114, 0.9);
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            background: rgba(30, 60, 114, 1);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>✈️ Aviation Traceability PDF Processor</h1>
+            <p>Extract certificates and validate compliance according to ASA-100 standards</p>
+        </div>
+        
+        <div class="content">
+            <div class="upload-section">
+                <h2 style="text-align: center; margin-bottom: 30px; color: #1e3c72;">Upload Your Documents</h2>
+                
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="drop-zone" id="dropZone">
+                        <div class="drop-zone-icon">📤</div>
+                        <div class="drop-zone-text">Drag & drop your PDF files here</div>
+                        <div class="drop-zone-hint">or click to browse for multiple files</div>
+                        
+                        <div class="file-input-wrapper">
+                            <input type="file" id="fileInput" name="files" accept=".pdf" multiple required>
+                            <label for="fileInput" class="file-input-label">Choose Multiple Files</label>
+                        </div>
+                    </div>
+                    
+                    <div id="selectedFiles" class="selected-files" style="display: none;"></div>
+                    
+                    <button type="submit" class="process-button" id="processButton" disabled>
+                        🚀 Process Documents
+                    </button>
+                </form>
+            </div>
+            
+            <div id="status"></div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">📄</span>
+                    <h3>PDF Parsing</h3>
+                    <p>Advanced parsing with table extraction and structure preservation</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">🔬</span>
+                    <h3>Certificate Extraction</h3>
+                    <p>AI-powered extraction of aviation certificates and traceability info</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">✅</span>
+                    <h3>Compliance Validation</h3>
+                    <p>Automatic validation against ASA-100 requirements</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📊</span>
+                    <h3>HTML Reports</h3>
+                    <p>Professional, mobile-friendly reports with detailed analysis</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="footer">
+            <p>&copy; 2025 Aviation Traceability System. Built with FastAPI and served from public folder.</p>
+        </footer>
+    </div>
+    
+    <!-- Navigation Bar -->
+    <div class="navigation-bar">
+        <a href="/public-demo" class="nav-link">📁 Public Files</a>
+        <a href="/docs" class="nav-link">📚 API Docs</a>
+        <a href="/health" class="nav-link">💚 Health</a>
+    </div>
+    
+    <!-- Upload Form JavaScript -->
+    <script>
+        let selectedFiles = [];
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('fileInput');
+            const processButton = document.getElementById('processButton');
+            const selectedFilesDiv = document.getElementById('selectedFiles');
+            
+            // Handle drag and drop
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('drag-over');
+            });
+            
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('drag-over');
+            });
+            
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('drag-over');
+                
+                const files = Array.from(e.dataTransfer.files);
+                handleFileSelection(files);
+            });
+            
+            // Handle file input change
+            fileInput.addEventListener('change', (e) => {
+                const files = Array.from(e.target.files);
+                handleFileSelection(files);
+            });
+            
+            // Handle click on drop zone
+            dropZone.addEventListener('click', (e) => {
+                if (e.target === dropZone || e.target.parentElement === dropZone) {
+                    fileInput.click();
+                }
+            });
+        });
+        
+        function handleFileSelection(files) {
+            const pdfFiles = files.filter(file => file.name.toLowerCase().endsWith('.pdf'));
+            selectedFiles = pdfFiles;
+            updateSelectedFilesDisplay();
+            updateProcessButton();
+        }
+        
+        function updateSelectedFilesDisplay() {
+            const selectedFilesDiv = document.getElementById('selectedFiles');
+            const dropZoneText = document.querySelector('.drop-zone-text');
+            const dropZoneHint = document.querySelector('.drop-zone-hint');
+            
+            if (selectedFiles.length === 0) {
+                selectedFilesDiv.style.display = 'none';
+                dropZoneText.textContent = 'Drag & drop your PDF files here';
+                dropZoneHint.textContent = 'or click to browse for multiple files';
+                return;
+            }
+            
+            selectedFilesDiv.style.display = 'block';
+            selectedFilesDiv.innerHTML = '';
+            
+            dropZoneText.textContent = `${selectedFiles.length} file${selectedFiles.length > 1 ? 's' : ''} selected`;
+            dropZoneHint.textContent = 'Click to change selection';
+            
+            selectedFiles.forEach((file, index) => {
+                const fileDiv = document.createElement('div');
+                fileDiv.className = 'selected-file';
+                
+                const fileName = document.createElement('div');
+                fileName.className = 'selected-file-name';
+                fileName.textContent = file.name;
+                
+                const fileSize = document.createElement('div');
+                fileSize.className = 'selected-file-size';
+                fileSize.textContent = formatFileSize(file.size);
+                
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'remove-file';
+                removeBtn.innerHTML = '×';
+                removeBtn.onclick = () => removeFile(index);
+                
+                fileDiv.appendChild(fileName);
+                fileDiv.appendChild(fileSize);
+                fileDiv.appendChild(removeBtn);
+                
+                selectedFilesDiv.appendChild(fileDiv);
+            });
+        }
+        
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            updateSelectedFilesDisplay();
+            updateProcessButton();
+        }
+        
+        function clearSelectedFiles() {
+            selectedFiles = [];
+            updateSelectedFilesDisplay();
+            updateProcessButton();
+            document.getElementById('fileInput').value = '';
+        }
+        
+        function updateProcessButton() {
+            const processButton = document.getElementById('processButton');
+            processButton.disabled = selectedFiles.length === 0;
+        }
+        
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        // Form submission handler
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (selectedFiles.length === 0) {
+                alert('Please select PDF file(s)');
+                return;
+            }
+            
+            const formData = new FormData();
+            
+            for (const file of selectedFiles) {
+                formData.append('files', file);
+            }
+            
+            const statusDiv = document.getElementById('status');
+            const processButton = document.getElementById('processButton');
+            
+            processButton.disabled = true;
+            processButton.textContent = '⏳ Processing...';
+            
+            statusDiv.style.display = 'block';
+            statusDiv.className = 'processing';
+            
+            statusDiv.innerHTML = `
+                <h3>🔄 Processing ${selectedFiles.length} Document${selectedFiles.length > 1 ? 's' : ''}</h3>
+                <p>${selectedFiles.length > 1 ? 'Processing files in parallel. This may take several minutes...' : `Analyzing ${selectedFiles[0].name}...`}</p>
+                <div class="progress-bar">
+                    <div class="progress-bar-fill"></div>
+                </div>
+            `;
+            
+            try {
+                const endpoint = '/process-pdf-batch';
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    statusDiv.className = 'success';
+                    const successRate = Math.round((result.successful_files / result.total_files) * 100);
+                    statusDiv.innerHTML = `
+                        <h3>✅ Batch Processing Complete!</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin: 20px 0;">
+                            <div style="text-align: center;">
+                                <div style="font-size: 2em; font-weight: bold; color: #007bff;">${result.total_files}</div>
+                                <div style="color: #6c757d; font-size: 0.9em;">Total Files</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 2em; font-weight: bold; color: #28a745;">${result.successful_files}</div>
+                                <div style="color: #6c757d; font-size: 0.9em;">Successful</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 2em; font-weight: bold; color: #dc3545;">${result.failed_files}</div>
+                                <div style="color: #6c757d; font-size: 0.9em;">Failed</div>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 2em; font-weight: bold; color: #17a2b8;">${successRate}%</div>
+                                <div style="color: #6c757d; font-size: 0.9em;">Success Rate</div>
+                            </div>
+                        </div>
+                        <p style="text-align: center; color: #6c757d; margin: 10px 0;">
+                            Processing completed in ${result.total_processing_time} seconds
+                        </p>
+                        <a href="${result.dashboard_url}" target="_blank" 
+                           style="display: inline-block; margin-top: 20px; padding: 12px 30px; background: #007bff; color: white; text-decoration: none; border-radius: 50px; font-weight: 600;">
+                            📊 View Batch Dashboard
+                        </a>
+                    `;
+                } else {
+                    statusDiv.className = 'error';
+                    statusDiv.innerHTML = `
+                        <h3>❌ Processing Failed</h3>
+                        <p>${result.message}</p>
+                        <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            Try Again
+                        </button>
+                    `;
+                }
+                
+                processButton.textContent = '🚀 Process Documents';
+                processButton.disabled = selectedFiles.length === 0;
+                
+                if (result.success) {
+                    clearSelectedFiles();
+                }
+                
+            } catch (error) {
+                statusDiv.className = 'error';
+                statusDiv.innerHTML = `
+                    <h3>❌ Connection Error</h3>
+                    <p>Failed to connect to the server: ${error.message}</p>
+                    <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                        Try Again
+                    </button>
+                `;
+                
+                processButton.textContent = '🚀 Process Documents';
+                processButton.disabled = selectedFiles.length === 0;
+            }
+        });
+    </script>
+    
+    <!-- Load external JavaScript for additional functionality -->
+    <script src="/public/js/app.js"></script>
+</body>
+</html> 

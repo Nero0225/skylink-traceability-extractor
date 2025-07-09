@@ -44,14 +44,54 @@ extractor = CertificateExtractor()
 validator = TraceabilitySourceValidator()
 html_generator = HTMLTraceabilityGenerator()
 
-# Create directories for storing processed files
+# Configuration for directories
 TEMP_DIR = "temp_uploads"
 OUTPUT_DIR = "processed_reports"
-os.makedirs(TEMP_DIR, exist_ok=True)
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+PUBLIC_DIR = "public"
 
-# Mount static files for serving generated HTML reports
+def setup_directories():
+    """Create and setup all required directories"""
+    directories = [
+        TEMP_DIR,
+        OUTPUT_DIR,
+        PUBLIC_DIR,
+        os.path.join(PUBLIC_DIR, "css"),
+        os.path.join(PUBLIC_DIR, "js"),
+        os.path.join(PUBLIC_DIR, "assets"),
+        os.path.join(PUBLIC_DIR, "assets", "images"),
+        os.path.join(PUBLIC_DIR, "assets", "documents"),
+        os.path.join(PUBLIC_DIR, "assets", "fonts"),
+        os.path.join(PUBLIC_DIR, "assets", "data")
+    ]
+    
+    for directory in directories:
+        os.makedirs(directory, exist_ok=True)
+        logger.info(f"Directory ensured: {directory}")
+
+# Setup directories on startup
+setup_directories()
+
+def check_public_files():
+    """Check if public files exist and log status"""
+    public_files = [
+        ("main.html", "Main application page"),
+        ("index.html", "Public demo page"),
+        ("css/styles.css", "Main stylesheet"),
+        ("js/app.js", "Main JavaScript file")
+    ]
+    
+    logger.info("Checking public files availability:")
+    for file_path, description in public_files:
+        full_path = os.path.join(PUBLIC_DIR, file_path)
+        status = "✅ Available" if os.path.exists(full_path) else "❌ Missing"
+        logger.info(f"  {description}: {status}")
+
+# Check public files on startup
+check_public_files()
+
+# Mount static files for serving generated HTML reports and public assets
 app.mount("/reports", StaticFiles(directory=OUTPUT_DIR), name="reports")
+app.mount("/public", StaticFiles(directory=PUBLIC_DIR), name="public")
 
 # Data models
 class ProcessingResult(BaseModel):
@@ -84,620 +124,19 @@ class BatchProcessingResult(BaseModel):
 
 @app.get("/", response_class=HTMLResponse)
 async def root():
-    """Root endpoint with upload form"""
+    """Root endpoint with upload form - now serves from public folder if available"""
+    try:
+        # Try to serve the main page from public folder
+        main_page_path = os.path.join(PUBLIC_DIR, "main.html")
+        if os.path.exists(main_page_path):
+            with open(main_page_path, "r", encoding="utf-8") as f:
+                return f.read()
+    except Exception as e:
+        logger.warning(f"Could not serve from public folder: {e}")
+    
+    # Fallback to embedded HTML with enhanced styling
     return """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Aviation Traceability PDF Processor</title>
-        <style>
-            * {
-                margin: 0;
-                padding: 0;
-                box-sizing: border-box;
-            }
-            
-            body { 
-                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                min-height: 100vh;
-                color: #333;
-                padding: 20px;
-            }
-            
-            .container { 
-                max-width: 900px; 
-                margin: 0 auto; 
-                background: white;
-                padding: 0;
-                border-radius: 20px;
-                box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-                overflow: hidden;
-            }
-            
-            .header {
-                background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-                color: white;
-                padding: 40px;
-                text-align: center;
-            }
-            
-            .header h1 { 
-                font-size: 2.5em;
-                font-weight: 600;
-                margin-bottom: 10px;
-                letter-spacing: -0.5px;
-            }
-            
-            .header p {
-                font-size: 1.1em;
-                opacity: 0.9;
-            }
-            
-            .content {
-                padding: 40px;
-            }
-            
-            .upload-section {
-                background: #f8f9fa;
-                border-radius: 15px;
-                padding: 30px;
-                margin-bottom: 30px;
-            }
-            
-
-            .drop-zone {
-                border: 3px dashed #007bff;
-                border-radius: 15px;
-                padding: 60px 40px;
-                text-align: center;
-                background: white;
-                position: relative;
-                transition: all 0.3s ease;
-                cursor: pointer;
-            }
-            
-            .drop-zone.drag-over {
-                background: #e7f3ff;
-                border-color: #0056b3;
-                transform: scale(1.02);
-            }
-            
-            .drop-zone-icon {
-                font-size: 4em;
-                color: #007bff;
-                margin-bottom: 20px;
-            }
-            
-            .drop-zone-text {
-                font-size: 1.2em;
-                color: #495057;
-                margin-bottom: 10px;
-            }
-            
-            .drop-zone-hint {
-                font-size: 0.9em;
-                color: #6c757d;
-            }
-            
-            .file-input-wrapper {
-                position: relative;
-                overflow: hidden;
-                display: inline-block;
-                margin-top: 20px;
-            }
-            
-            .file-input-wrapper input[type="file"] {
-                position: absolute;
-                left: -9999px;
-            }
-            
-            .file-input-label {
-                display: inline-block;
-                padding: 12px 30px;
-                background: #007bff;
-                color: white;
-                border-radius: 8px;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                font-weight: 500;
-            }
-            
-            .file-input-label:hover {
-                background: #0056b3;
-                transform: translateY(-1px);
-                box-shadow: 0 5px 15px rgba(0,123,255,0.3);
-            }
-            
-            .selected-files {
-                margin-top: 20px;
-                max-height: 200px;
-                overflow-y: auto;
-            }
-            
-            .selected-file {
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                padding: 10px 15px;
-                background: #f8f9fa;
-                border-radius: 8px;
-                margin-bottom: 8px;
-            }
-            
-            .selected-file-name {
-                flex: 1;
-                font-size: 0.9em;
-                color: #495057;
-                white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-            
-            .selected-file-size {
-                font-size: 0.8em;
-                color: #6c757d;
-                margin-left: 10px;
-            }
-            
-            .remove-file {
-                background: none;
-                border: none;
-                color: #dc3545;
-                cursor: pointer;
-                font-size: 1.2em;
-                padding: 0 5px;
-                transition: all 0.2s ease;
-            }
-            
-            .remove-file:hover {
-                transform: scale(1.2);
-            }
-            
-            .process-button {
-                background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-                color: white;
-                padding: 15px 50px;
-                border: none;
-                border-radius: 50px;
-                font-size: 1.1em;
-                font-weight: 600;
-                cursor: pointer;
-                margin: 30px auto 0;
-                display: block;
-                transition: all 0.3s ease;
-                box-shadow: 0 5px 20px rgba(0,123,255,0.3);
-            }
-            
-            .process-button:hover:not(:disabled) {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 30px rgba(0,123,255,0.4);
-            }
-            
-            .process-button:disabled {
-                background: #6c757d;
-                cursor: not-allowed;
-                box-shadow: none;
-            }
-            
-            .features {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 20px;
-                margin: 40px 0;
-            }
-            
-            .feature {
-                padding: 25px;
-                background: white;
-                border-radius: 15px;
-                text-align: center;
-                box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-                transition: all 0.3s ease;
-            }
-            
-            .feature:hover {
-                transform: translateY(-5px);
-                box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            }
-            
-            .feature-icon {
-                font-size: 2.5em;
-                margin-bottom: 15px;
-                display: block;
-            }
-            
-            .feature h3 {
-                color: #1e3c72;
-                margin-bottom: 10px;
-                font-size: 1.2em;
-            }
-            
-            .feature p {
-                color: #6c757d;
-                font-size: 0.95em;
-                line-height: 1.6;
-            }
-            
-            #status {
-                margin-top: 30px;
-                padding: 20px;
-                border-radius: 10px;
-                display: none;
-                animation: slideIn 0.3s ease;
-            }
-            
-            @keyframes slideIn {
-                from {
-                    opacity: 0;
-                    transform: translateY(-10px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateY(0);
-                }
-            }
-            
-            .success { 
-                background: #d4edda; 
-                color: #155724; 
-                border: 1px solid #c3e6cb;
-            }
-            
-            .error { 
-                background: #f8d7da; 
-                color: #721c24; 
-                border: 1px solid #f5c6cb;
-            }
-            
-            .processing { 
-                background: #fff3cd; 
-                color: #856404; 
-                border: 1px solid #ffeaa7;
-            }
-            
-            .progress-bar {
-                width: 100%;
-                height: 4px;
-                background: #e9ecef;
-                border-radius: 2px;
-                overflow: hidden;
-                margin-top: 15px;
-            }
-            
-            .progress-bar-fill {
-                height: 100%;
-                background: #007bff;
-                width: 0%;
-                animation: progress 2s ease-in-out infinite;
-            }
-            
-            @keyframes progress {
-                0% { width: 0%; }
-                50% { width: 70%; }
-                100% { width: 100%; }
-            }
-            
-            @media (max-width: 768px) {
-                .container {
-                    margin: 10px;
-                }
-                
-                .header {
-                    padding: 30px 20px;
-                }
-                
-                .header h1 {
-                    font-size: 2em;
-                }
-                
-                .content {
-                    padding: 20px;
-                }
-                
-                .drop-zone {
-                    padding: 40px 20px;
-                }
-                
-                .features {
-                    grid-template-columns: 1fr;
-                }
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <h1>✈️ Aviation Traceability PDF Processor</h1>
-                <p>Extract certificates and validate compliance according to ASA-100 standards</p>
-            </div>
-            
-            <div class="content">
-                <div class="upload-section">
-                    <h2 style="text-align: center; margin-bottom: 30px; color: #1e3c72;">Upload Your Documents</h2>
-                    
-                    <form id="uploadForm" enctype="multipart/form-data">
-                        <div class="drop-zone" id="dropZone">
-                            <div class="drop-zone-icon">📤</div>
-                            <div class="drop-zone-text">Drag & drop your PDF files here</div>
-                            <div class="drop-zone-hint">or click to browse for multiple files</div>
-                            
-                            <div class="file-input-wrapper">
-                                <input type="file" id="fileInput" name="files" accept=".pdf" multiple required>
-                                <label for="fileInput" class="file-input-label">Choose Multiple Files</label>
-                            </div>
-                        </div>
-                        
-                        <div id="selectedFiles" class="selected-files" style="display: none;"></div>
-                        
-                        <button type="submit" class="process-button" id="processButton" disabled>
-                            🚀 Process Documents
-                        </button>
-                    </form>
-                </div>
-                
-                <div id="status"></div>
-                
-                <div class="features">
-                    <div class="feature">
-                        <span class="feature-icon">📄</span>
-                        <h3>PDF Parsing</h3>
-                        <p>Advanced parsing with table extraction and structure preservation</p>
-                    </div>
-                    <div class="feature">
-                        <span class="feature-icon">🔬</span>
-                        <h3>Certificate Extraction</h3>
-                        <p>AI-powered extraction of aviation certificates and traceability info</p>
-                    </div>
-                    <div class="feature">
-                        <span class="feature-icon">✅</span>
-                        <h3>Compliance Validation</h3>
-                        <p>Automatic validation against ASA-100 requirements</p>
-                    </div>
-                    <div class="feature">
-                        <span class="feature-icon">📊</span>
-                        <h3>HTML Reports</h3>
-                        <p>Professional, mobile-friendly reports with detailed analysis</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <script>
-            let selectedFiles = [];
-            
-            // Initialize
-            document.addEventListener('DOMContentLoaded', function() {
-                const dropZone = document.getElementById('dropZone');
-                const fileInput = document.getElementById('fileInput');
-                const processButton = document.getElementById('processButton');
-                const selectedFilesDiv = document.getElementById('selectedFiles');
-                
-                // Handle drag and drop
-                dropZone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    dropZone.classList.add('drag-over');
-                });
-                
-                dropZone.addEventListener('dragleave', () => {
-                    dropZone.classList.remove('drag-over');
-                });
-                
-                dropZone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    dropZone.classList.remove('drag-over');
-                    
-                    const files = Array.from(e.dataTransfer.files);
-                    handleFileSelection(files);
-                });
-                
-                // Handle file input change
-                fileInput.addEventListener('change', (e) => {
-                    const files = Array.from(e.target.files);
-                    handleFileSelection(files);
-                });
-                
-                // Handle click on drop zone
-                dropZone.addEventListener('click', (e) => {
-                    if (e.target === dropZone || e.target.parentElement === dropZone) {
-                        fileInput.click();
-                    }
-                });
-            });
-            
-            function handleFileSelection(files) {
-                // Filter for PDF files only
-                const pdfFiles = files.filter(file => file.name.toLowerCase().endsWith('.pdf'));
-                
-                selectedFiles = pdfFiles;
-                
-                updateSelectedFilesDisplay();
-                updateProcessButton();
-            }
-            
-            function updateSelectedFilesDisplay() {
-                const selectedFilesDiv = document.getElementById('selectedFiles');
-                const dropZoneText = document.querySelector('.drop-zone-text');
-                const dropZoneHint = document.querySelector('.drop-zone-hint');
-                
-                if (selectedFiles.length === 0) {
-                    selectedFilesDiv.style.display = 'none';
-                    dropZoneText.textContent = 'Drag & drop your PDF files here';
-                    dropZoneHint.textContent = 'or click to browse for multiple files';
-                    return;
-                }
-                
-                selectedFilesDiv.style.display = 'block';
-                selectedFilesDiv.innerHTML = '';
-                
-                dropZoneText.textContent = `${selectedFiles.length} file${selectedFiles.length > 1 ? 's' : ''} selected`;
-                dropZoneHint.textContent = 'Click to change selection';
-                
-                selectedFiles.forEach((file, index) => {
-                    const fileDiv = document.createElement('div');
-                    fileDiv.className = 'selected-file';
-                    
-                    const fileName = document.createElement('div');
-                    fileName.className = 'selected-file-name';
-                    fileName.textContent = file.name;
-                    
-                    const fileSize = document.createElement('div');
-                    fileSize.className = 'selected-file-size';
-                    fileSize.textContent = formatFileSize(file.size);
-                    
-                    const removeBtn = document.createElement('button');
-                    removeBtn.className = 'remove-file';
-                    removeBtn.innerHTML = '×';
-                    removeBtn.onclick = () => removeFile(index);
-                    
-                    fileDiv.appendChild(fileName);
-                    fileDiv.appendChild(fileSize);
-                    fileDiv.appendChild(removeBtn);
-                    
-                    selectedFilesDiv.appendChild(fileDiv);
-                });
-            }
-            
-            function removeFile(index) {
-                selectedFiles.splice(index, 1);
-                updateSelectedFilesDisplay();
-                updateProcessButton();
-            }
-            
-            function clearSelectedFiles() {
-                selectedFiles = [];
-                updateSelectedFilesDisplay();
-                updateProcessButton();
-                document.getElementById('fileInput').value = '';
-            }
-            
-            function updateProcessButton() {
-                const processButton = document.getElementById('processButton');
-                processButton.disabled = selectedFiles.length === 0;
-            }
-            
-            function formatFileSize(bytes) {
-                if (bytes === 0) return '0 Bytes';
-                const k = 1024;
-                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-            }
-
-            document.getElementById('uploadForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                if (selectedFiles.length === 0) {
-                    alert('Please select PDF file(s)');
-                    return;
-                }
-                
-                const formData = new FormData();
-                
-                // Append all selected files
-                for (const file of selectedFiles) {
-                    formData.append('files', file);
-                }
-                
-                const statusDiv = document.getElementById('status');
-                const processButton = document.getElementById('processButton');
-                
-                // Disable button and update UI
-                processButton.disabled = true;
-                processButton.textContent = '⏳ Processing...';
-                
-                statusDiv.style.display = 'block';
-                statusDiv.className = 'processing';
-                
-                statusDiv.innerHTML = `
-                    <h3>🔄 Processing ${selectedFiles.length} Document${selectedFiles.length > 1 ? 's' : ''}</h3>
-                    <p>${selectedFiles.length > 1 ? 'Processing files in parallel. This may take several minutes...' : `Analyzing ${selectedFiles[0].name}...`}</p>
-                    <div class="progress-bar">
-                        <div class="progress-bar-fill"></div>
-                    </div>
-                `;
-                
-                try {
-                    // Always use batch endpoint for multiple files
-                    const endpoint = '/process-pdf-batch';
-                    const response = await fetch(endpoint, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (result.success) {
-                        statusDiv.className = 'success';
-                        
-                        // Always show batch processing result
-                        const successRate = Math.round((result.successful_files / result.total_files) * 100);
-                        statusDiv.innerHTML = `
-                                <h3>✅ Batch Processing Complete!</h3>
-                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin: 20px 0;">
-                                    <div style="text-align: center;">
-                                        <div style="font-size: 2em; font-weight: bold; color: #007bff;">${result.total_files}</div>
-                                        <div style="color: #6c757d; font-size: 0.9em;">Total Files</div>
-                                    </div>
-                                    <div style="text-align: center;">
-                                        <div style="font-size: 2em; font-weight: bold; color: #28a745;">${result.successful_files}</div>
-                                        <div style="color: #6c757d; font-size: 0.9em;">Successful</div>
-                                    </div>
-                                    <div style="text-align: center;">
-                                        <div style="font-size: 2em; font-weight: bold; color: #dc3545;">${result.failed_files}</div>
-                                        <div style="color: #6c757d; font-size: 0.9em;">Failed</div>
-                                    </div>
-                                    <div style="text-align: center;">
-                                        <div style="font-size: 2em; font-weight: bold; color: #17a2b8;">${successRate}%</div>
-                                        <div style="color: #6c757d; font-size: 0.9em;">Success Rate</div>
-                                    </div>
-                                </div>
-                                <p style="text-align: center; color: #6c757d; margin: 10px 0;">
-                                    Processing completed in ${result.total_processing_time} seconds
-                                </p>
-                                <a href="${result.dashboard_url}" target="_blank" 
-                                   style="display: inline-block; margin-top: 20px; padding: 12px 30px; background: #007bff; color: white; text-decoration: none; border-radius: 50px; font-weight: 600;">
-                                                                    📊 View Batch Dashboard
-                            </a>
-                        `;
-                    } else {
-                        statusDiv.className = 'error';
-                        statusDiv.innerHTML = `
-                            <h3>❌ Processing Failed</h3>
-                            <p>${result.message}</p>
-                            <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                                Try Again
-                            </button>
-                        `;
-                    }
-                    
-                    // Reset button
-                    processButton.textContent = '🚀 Process Documents';
-                    processButton.disabled = selectedFiles.length === 0;
-                    
-                    // Clear files after successful processing
-                    if (result.success) {
-                        clearSelectedFiles();
-                    }
-                    
-                } catch (error) {
-                    statusDiv.className = 'error';
-                    statusDiv.innerHTML = `
-                        <h3>❌ Connection Error</h3>
-                        <p>Failed to connect to the server: ${error.message}</p>
-                        <button onclick="location.reload()" style="margin-top: 20px; padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                            Try Again
-                        </button>
-                    `;
-                    
-                    // Reset button
-                    processButton.textContent = '🚀 Process Documents';
-                    processButton.disabled = selectedFiles.length === 0;
-                }
-            });
-        </script>
-    </body>
-    </html>
+    null
     """
 
 @app.post("/process-pdf", response_model=ProcessingResult)
@@ -1299,6 +738,44 @@ def generate_batch_dashboard(batch_id: str, results: List[ProcessingResult]) -> 
     
     return dashboard_html
 
+@app.get("/public-demo", response_class=HTMLResponse)
+async def public_demo():
+    """Serve the public demo page"""
+    try:
+        with open(os.path.join(PUBLIC_DIR, "index.html"), "r", encoding="utf-8") as f:
+            return f.read()
+    except FileNotFoundError:
+        return HTMLResponse(
+            content="<h1>Public demo page not found</h1><p>Please ensure the public/index.html file exists.</p>",
+            status_code=404
+        )
+
+@app.get("/public/{file_path:path}", response_class=HTMLResponse)
+async def serve_public_file(file_path: str):
+    """Serve custom HTML files from public directory"""
+    try:
+        # Security check - prevent directory traversal
+        if ".." in file_path or file_path.startswith("/"):
+            raise HTTPException(status_code=400, detail="Invalid file path")
+        
+        # Only serve HTML files through this endpoint
+        if not file_path.endswith('.html'):
+            raise HTTPException(status_code=400, detail="Only HTML files can be served through this endpoint")
+        
+        full_path = os.path.join(PUBLIC_DIR, file_path)
+        
+        if not os.path.exists(full_path):
+            raise HTTPException(status_code=404, detail="File not found")
+        
+        with open(full_path, "r", encoding="utf-8") as f:
+            return f.read()
+            
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error serving public file {file_path}: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error")
+
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
@@ -1311,9 +788,30 @@ async def get_api_docs():
         "title": "Aviation Traceability PDF Processor API",
         "version": "1.0.0",
         "endpoints": {
-            "POST /process-pdf": "Upload and process PDF document",
-            "GET /health": "Health check",
-            "GET /reports/{filename}": "Access generated HTML reports"
+            "GET /": "Main application interface",
+            "POST /process-pdf": "Upload and process single PDF document",
+            "POST /process-pdf-batch": "Upload and process multiple PDF documents",
+            "GET /public-demo": "Public demo page",
+            "GET /public/{file_path}": "Serve custom HTML files from public directory",
+            "GET /public/": "Static files (CSS, JS, assets) from public directory",
+            "GET /reports/{filename}": "Access generated HTML reports",
+            "GET /health": "Health check endpoint",
+            "GET /api/docs": "This API documentation"
+        },
+        "public_folder": {
+            "description": "Static files served from public/ directory",
+            "structure": {
+                "public/": "Root public directory",
+                "public/css/": "Stylesheets",
+                "public/js/": "JavaScript files",
+                "public/assets/": "Static assets (images, documents, fonts, data)"
+            },
+            "access_examples": {
+                "HTML files": "GET /public/custom-page.html",
+                "CSS files": "GET /public/css/styles.css",
+                "JS files": "GET /public/js/app.js",
+                "Assets": "GET /public/assets/images/logo.png"
+            }
         }
     }
 
